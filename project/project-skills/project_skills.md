@@ -1,0 +1,1 @@
+Você pode criar scripts auxiliares na sua máquina (em Bash ou Node) que executam testes ou migrações, e ensinar a IA a chamá-los quando precisar validar se o que ela programou está funcionando.
