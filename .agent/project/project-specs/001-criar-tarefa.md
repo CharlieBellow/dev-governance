@@ -1,3 +1,4 @@
+<!-- exemplo de skill -->
 # Spec 001: Criar Nova Tarefa
 
 ## 1. Identificação da Tarefa

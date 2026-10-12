@@ -1,0 +1,37 @@
+{
+  "name": "to-do-api",
+  "version": "0.0.1",
+  "private": true,
+  "description": "API de Tarefas (To-Do API) - camada de Domínio",
+  "scripts": {
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "typecheck": "tsc --noEmit"
+  },
+  "devDependencies": {
+    "@types/node": "^20.14.0",
+    "@types/pg": "^8.23.1",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.5.4",
+    "vitest": "^2.1.4"
+  },
+  "main": "index.js",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/CharlieBellow/dev-governance.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/CharlieBellow/dev-governance/issues"
+  },
+  "homepage": "https://github.com/CharlieBellow/dev-governance#readme",
+  "dependencies": {
+    "@google/genai": "^2.28.0",
+    "dotenv": "^18.0.7",
+    "pg": "^8.23.1",
+    "pq": "^0.0.3"
+  }
+}
