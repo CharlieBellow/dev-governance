@@ -34,14 +34,11 @@ async function generateEmbedding(text: string): Promise<number[]> {
   return data.embedding.values
 }
 
-async function askGeminiWithContext(
-  userQuery: string,
-  contextChunks: string[]
-): Promise<string> {
-  // Usando o modelo atualizado indicado pelo erro da API
-const url = `https://generativelanguage.googleapis.com/v1/models/gemini-1.5-flash:generateContent?key=${apiKey}`
-
-  const combinedContext = contextChunks.join("\n\n---\n\n")
+async function askOllamaWithContext(userQuery: string, contextChunks: string[]): Promise<string> {
+  // Endpoint padrão do Ollama rodando localmente
+  const url = 'http://localhost:11434/api/generate';
+  
+  const combinedContext = contextChunks.join('\n\n---\n\n');
   const prompt = `
     Você é um Desenvolvedor Sênior orientando um desenvolvedor júnior com base estrita nas regras de governança abaixo.
     
@@ -52,28 +49,25 @@ const url = `https://generativelanguage.googleapis.com/v1/models/gemini-1.5-flas
     ${userQuery}
 
     Instrução: Responda explicando o raciocínio detalhadamente, apontando boas práticas (Clean Code, DDD, etc.) com base nas regras fornecidas. Não dê respostas rasas.
-  `
+  `;
 
   const response = await fetch(url, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({
-      contents: [{ parts: [{ text: prompt }] }]
-    })
-  })
+      model: 'llama3', // ou o modelo que você tiver baixado (ex: mistral, phi3)
+      prompt: prompt,
+      stream: false // Para receber a resposta completa de uma vez só, igual fazíamos
+    }),
+  });
 
-  const data = (await response.json()) as any
+  const data = await response.json() as any;
 
-  if (data.error) {
-    return `Erro retornado pela API do Gemini: ${JSON.stringify(data.error, null, 2)}`
+  if (!data.response) {
+    return `Erro retornado pelo Ollama: ${JSON.stringify(data, null, 2)}`;
   }
 
-  const candidate = data.candidates?.[0]
-  if (!candidate || !candidate.content?.parts?.[0]?.text) {
-    return `Resposta inesperada da API: ${JSON.stringify(data, null, 2)}`
-  }
-
-  return candidate.content.parts[0].text
+  return data.response;
 }
 
 function promptUser() {
@@ -99,8 +93,9 @@ function promptUser() {
 
         const contextChunks = dbResult.rows.map((row) => row.content)
 
-        console.log("🤖 Gerando resposta com o Gemini...")
-        const answer = await askGeminiWithContext(query, contextChunks)
+
+        console.log("🤖 Gerando resposta com o Ollama...")
+        const answer = await askOllamaWithContext(query, contextChunks)
 
         console.log(`\n--- Resposta ---\n${answer}\n----------------`)
       } catch (error) {
