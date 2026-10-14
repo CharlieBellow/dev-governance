@@ -1,0 +1,40 @@
+# Skill: Gerar Texto de Pull Request (Smart PR)
+
+## Descrição
+Lê a Task original (`project-tasks/`) e o Log de Progresso correspondente (`docs/progresso/`) para gerar um texto de Pull Request rico, estruturado, profissional e pronto para ser copiado.
+
+## Como Acionar / Executar
+Use o comando: `Gere o texto da PR para a task [numero]-[nome-da-task]`
+
+## Instruções para o Agente
+Quando acionado, o agente DEVE:
+1. Ler o arquivo da Task em `.agent/project/project-tasks/[numero]-[nome-da-task]-task.md`.
+2. Ler o arquivo de Log em `.agent/project/docs/progresso/[numero]-[nome-da-task]-log.md`.
+3. Sintetizar as informações combinando o problema inicial com a solução implementada, gerando o markdown abaixo.
+
+---
+
+## Template de Saída da PR (Obrigatório)
+
+📝 **Resumo das Alterações**
+Este Pull Request consolida as alterações referentes à task `[NUMERO] - [NOME_DA_TASK]`, implementando os requisitos arquiteturais definidos em spec com foco em Clean Code, DDD e segurança.
+
+🎯 **O que foi feito?**
+- [Resumo técnico item 1 do que foi implementado]
+- [Resumo técnico item 2 cobrindo DTOs, Zod ou Domínio]
+- [Cobertura de testes unitários realizados]
+
+🧠 **Motivação (Por que essa alteração?)**
+[Resgatar do contexto da Task o problema original e por que a solução foi desenhada dessa forma, citando Clean Architecture, separação de camadas ou previsibilidade de negócio]
+
+🧪 **Como testar?**
+1. Certifique-se de que as dependências estão atualizadas.
+2. Execute o comando de testes unitários específicos: `pnpm vitest run [caminho-do-teste]`
+3. Valida se todos os cenários retornam verde (Green).
+
+📋 **Tipo de Alteração**
+[ ] Nova funcionalidade (feat)
+[ ] Correção de bug (fix)
+[ ] Refatoração de código (refactor)
+[ ] Adição de testes (test)
+[ ] Documentação (docs)

@@ -1,0 +1,35 @@
+# Skill: Criar Task Unificada (Spec + Execução)
+
+## Descrição
+Gera um novo arquivo unificado de Task + Spec técnica (`.md`) dentro da pasta `.agent/project/project-tasks/` do projeto atual, aplicando o template padrão de engenharia com validações Zod e Clean Architecture.
+
+## Como Acionar / Executar
+Quando esta skill for acionada pelo comando do usuário, siga estritamente estes passos:
+1. Receba o nome da task informado (ex: `001-criar-tarefa`) e a descrição da Issue.
+2. Crie o arquivo `.agent/project/project-tasks/<nome-da-task>-task.md`.
+3. Preencha o arquivo utilizando o template padrão unificado (veja abaixo).
+4. Confirme ao usuário que a task foi criada e está pronta para ser executada.
+
+---
+
+## Template Padrão Unificado (Copiar e Preencher)
+
+# Task + Spec: [NUMERO] - [NOME_DA_FEATURE]
+
+## 🎯 1. Contexto e Problema (Spec)
+- **Descrição da Issue:** [Descreva aqui o problema relatado ou funcionalidade solicitada]
+- **Módulo Alvo / Camada Afetada:** [Ex: `src/domain/`, `src/application/use-cases/`]
+
+## 🔒 2. Requisitos de Segurança e DTOs (Zod)
+- **Validação de Entrada:** Especificar o schema Zod obrigatório para validar o payload de entrada (sem aceitar dados crus) (se aplicável).
+- **Prevenção de Vazamento:** Garantir que nenhuma entidade de banco ou dado sensível retorne diretamente na resposta.
+
+## 📋 3. Critérios de Aceite e Regras de Negócio
+1. [Regra de negócio 1 pura e isolada de frameworks]
+2. [Regra de negócio 2 com tipagem estrita em TypeScript, sem uso de `any`]
+
+## 🛠️ 4. Passos de Execução para a IA (Task)
+1. **Passo 1:** Criar/Atualizar os DTOs de validação com Zod.
+2. **Passo 2:** Implementar a regra pura no Domínio/Caso de Uso (Clean Architecture).
+3. **Passo 3:** Implementar a camada de infraestrutura/controller (se aplicável).
+4. **Passo 4:** Criar os testes unitários correspondentes utilizando **Vitest**.

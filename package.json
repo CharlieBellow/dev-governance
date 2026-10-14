@@ -6,10 +6,11 @@
   "scripts": {
     "test": "vitest run",
     "test:watch": "vitest",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "spec:generate": "ts-node scripts/run-ollama-spec.ts"
   },
   "devDependencies": {
-    "@types/node": "^20.14.0",
+    "@types/node": "^20.19.43",
     "@types/pg": "^8.23.1",
     "ts-node": "^10.9.2",
     "typescript": "^5.5.4",

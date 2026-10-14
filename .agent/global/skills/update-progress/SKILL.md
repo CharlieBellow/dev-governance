@@ -1,25 +1,26 @@
 # Skill: Update Progress / Diário de Bordo
 
 ## Descrição
-Analisa as alterações recentes no código, os testes executados e o escopo da tarefa atual para gerar um registro de progresso limpo e estruturado (`task-log.md`), garantindo a continuidade do contexto entre diferentes sessões ou computadores.
+Gera o relatório retrospectivo de progresso e diário de bordo (`<numero>-<nome-da-task>-log.md`) salvando-o estritamente na pasta `.agent/project/docs/progresso/`.
 
 ## Instruções para Execução do Agente
 Quando esta skill for acionada, o agente deve:
-1. **Inspecionar:** Verificar o status atual do git (`git status`, arquivos alterados) e a spec que estava sendo desenvolvida.
-2. **Resumir:** Sintetizar o que foi concluído, quais decisões técnicas ou arquiteturais foram tomadas e quais testes foram validados.
-3. **Gerar Log:** Produzir um arquivo Markdown seguindo estritamente o template abaixo pronto para ser salvo na pasta de progresso do projeto.
+1. **Identificar:** Ler o nome e o número da Task ativa (ex: `001-criar-tarefa`).
+2. **Inspecionar:** Verificar as alterações reais no git (`git status`) e os testes executados.
+3. **Salvar:** Criar o arquivo de log seguindo a convenção de nome exata na pasta `.agent/project/docs/progresso/`.
 
 ---
 
 ## Template de Saída do Log (Obrigatório)
+O arquivo gerado DEVE ser salvo em: `.agent/project/docs/progresso/[NUMERO]-[NOME_DA_TASK]-log.md`
 
-# Log de Progresso - [NOME_DA_TASK_OU_FEATURE]
+# Log de Progresso: [NUMERO] - [NOME_DA_TASK]
 
 ## 🎯 O que foi feito?
-- **[Módulo/Camada]:** [Descrição objetiva da alteração, ex: Criada a entidade de Domínio Task com validações puras]
+- **[Módulo/Camada]:** [Descrição objetiva e técnica da alteração realizada]
 
 ## 🧪 Validação e Testes
-- [Descrever os testes executados, ex: Testes unitários rodados via Vitest com sucesso]
+- [Descrever os testes executados e validados via Vitest]
 
 ## 🚀 Próximo Passo Imediato
-- [O que falta fazer para concluir esta spec ou qual é a próxima micro-tarefa pendente]
+- [O que falta ou qual a próxima micro-tarefa pendente, se houver]

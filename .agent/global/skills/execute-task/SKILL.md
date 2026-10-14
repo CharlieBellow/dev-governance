@@ -1,16 +1,27 @@
-"Usando a spec [spec_informada] e o PROJECT_MAP.md, execute a task no módulo users.
+# Skill: Executar Task Unificada
 
-Siga rigorosamente:
+## Descrição
+Instrui o agente Sênior a executar uma Task/Spec específica de forma isolada, garantindo o uso de Clean Architecture, Domain-Driven Design, validações com Zod e cobertura obrigatória de testes com Vitest.
 
-Aplique a correção técnica descrita na spec no componente de edição de usuários, respeitando o padrão de código existente.
+## Como Acionar
+Use o comando: `Execute a task [nome-da-task]-task.md`
 
-Escreva o arquivo de teste unitário (EditUserDialog.test.tsx) cobrindo o cenário de estado desatualizado e garantindo que os testes passam via Vitest.
+## ⚙️ Diretrizes Obrigatórias de Execução para o Agente
+Quando esta skill for acionada, você (agente) DEVE seguir estritamente o protocolo abaixo:
 
-Me entregue o relatório final com o que foi feito, o pattern seguido e a lista exata dos arquivos modificados."*
-
-
-Uso
-
-`
-Execute a task [nome_da_task_informada]-taks.md
-`
+1. **Leitura Cirúrgica (Economia de Tokens):** 
+   - Leia APENAS o arquivo `.agent/project/PROJECT_MAP.md` e o arquivo da Task especificada em `.agent/project/project-tasks/[nome-da-task]-task.md`. 
+   - NUNCA varra o repositório inteiro.
+2. **Postura Pedagógica (Sênior para Júnior):**
+   - Explique o raciocínio técnico passo a passo antes de escrever o código.
+   - Detalhe os padrões de projeto aplicados (ex: Repository Pattern, Value Objects) e os potenciais erros evitados.
+3. **Segurança e Validação (Zod):**
+   - Certifique-se de que todas as entradas de dados passem por validações estritas usando **Zod** nos DTOs.
+   - Garanta o isolamento total do Domínio (sem frameworks ou ORMs nas regras de negócio puras).
+4. **Definition of Done (Testes Obrigatórios com Vitest):**
+   - Escreva e valide os testes unitários correspondentes utilizando **Vitest** antes de encerrar.
+5. **Relatório de Entrega:**
+   - Ao finalizar, entregue um relatório estruturado contendo:
+     - O que foi feito e os padrões seguidos.
+     - A lista exata de arquivos modificados ou criados.
+     - A confirmação de que os testes passaram no Vitest.

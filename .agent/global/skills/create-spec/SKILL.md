@@ -1,4 +1,4 @@
-# Skill: Criar Nova Spec
+<!-- # Skill: Criar Nova Spec
 
 ## Descrição
 Gera um novo arquivo de especificação técnica (`.md`) dentro da pasta `specs/` do projeto atual, utilizando o template padrão de blueprint de engenharia.
@@ -27,4 +27,4 @@ mkSpec() {
 }
 
 ```
-como usar: > *"Use a skill `create-spec` para mim e crie uma especificação chamada `002-validar-pagamento`"*
+como usar: > *"Use a skill `create-spec` para mim e crie uma especificação chamada `002-validar-pagamento`"* -->

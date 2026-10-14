@@ -1,14 +1,15 @@
 # Regras Específicas do Projeto: To-Do API
 
-## 1. Escopo Inicial
-- O projeto consiste em uma API backend construída com NestJS e TypeScript estrito.
-- Foco inicial: Módulo de Tarefas (Tasks).
+## 1. Escopo Tecnológico
+- Backend construído com NestJS, TypeScript estrito e arquitetura modular.
+- Validação de payload nas bordas utilizando **Zod**.
 
 ## 2. Camadas e Responsabilidades
-- **Domínio (`src/domain/`):** Contém as entidades puras (ex: `Task`) e objetos de valor. Nenhuma dependência externa (sem Prisma, sem NestJS).
-- **Casos de Uso (`src/application/`):** Contém a lógica de aplicação (ex: `CreateTaskUseCase`).
-- **Infraestrutura (`src/infrastructure/`):** Repositórios TypeORM/Prisma, Controllers do NestJS e conexões externas.
+- **Domínio (`src/domain/`):** Entidades puras de Tarefas (ex: `Task`). Totalmente independentes de Prisma, TypeORM ou NestJS.
+- **Aplicação (`src/application/`):** Casos de uso (ex: `CreateTaskUseCase`) e contratos de repositório (Interfaces).
+- **Infraestrutura (`src/infrastructure/`):** Implementação de repositórios (Prisma/TypeORM), Controllers do NestJS e filtros de exceção.
 
-## 3. Padrões de Qualidade
-- Obrigatório uso de Vitest para testes unitários nas entidades e casos de uso.
-- Tratamento de erros centralizado via Exception Filters do NestJS.
+## 3. Padrões de Qualidade e Segurança
+- Obrigatório o uso de **Vitest** para testes unitários isolados nas regras de negócio.
+- Tratamento centralizado de erros de domínio.
+- Proibido expor entidades de banco de dados diretamente nos controllers; utilize DTOs de resposta validados.
