@@ -10,6 +10,7 @@
     "spec:generate": "ts-node scripts/run-ollama-spec.ts"
   },
   "devDependencies": {
+    "ecc-core": "git+https://github.com/CharlieBellow/ECC.git",
     "@types/node": "^20.19.43",
     "@types/pg": "^8.23.1",
     "ts-node": "^10.9.2",

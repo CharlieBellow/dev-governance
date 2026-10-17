@@ -1,3 +1,6 @@
+onlyBuiltDependencies:
+  - "ecc-universal"
+
 allowBuilds:
   '@google/genai': false
   esbuild: false
