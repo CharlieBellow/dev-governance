@@ -1,3 +1,26 @@
+# Dev Governance & Engineering Standards
+
+Este repositório centraliza a governança, os padrões arquiteturais e as skills dos agentes de IA para todos os projetos (como a API do TransCenso e futuros sistemas em NestJS, Next.js, Prisma e MySQL).
+
+## Princípios de Engenharia
+- **Clean Architecture & DDD:** Separação rígida entre Domínio (puro), Aplicação (casos de uso) e Infraestrutura (Prisma/NestJS).
+- **TDD Rigoroso:** Ciclo Red -> Green -> Refactor utilizando **Vitest** para cobrir regras de negócio do Domínio.
+- **Tipagem Estrita:** TypeScript em strict mode, imutabilidade e tratamento centralizado de exceções de domínio.
+
+## Estrutura de Documentação (`docs/`)
+Todo o planejamento gerado pelas IAs é armazenado de forma permanente e organizada na pasta `docs/` do projeto:
+- **`docs/specs/`**: Especificações técnicas sintetizadas.
+- **`docs/tasks/`**: Fatias de tarefas verticais (*tracer-bullets*).
+- **`docs/adr/`**: Registros de Decisão Arquitetural.
+
+## Fluxo de Trabalho com Agentes
+1. **Planejamento:** `/grill-plan` (Entrevista em rodadas para debater requisitos e regras de negócio).
+2. **Especificação:** `/to-spec` (Sintetiza o alinhamento em uma spec salva em `docs/specs/`).
+3. **Fatiamento:** `/to-tickets` (Quebra a spec em tarefas verticais salvas em `docs/tasks/`).
+4. **Implementação:** Execução guiada por TDD e Clean Code.
+
+
+
 # PARA RODAR O PROJETO:
 
 Rodar o comando no terminal para subir o docker:
