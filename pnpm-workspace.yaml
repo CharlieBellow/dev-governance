@@ -1,7 +1,2 @@
 onlyBuiltDependencies:
-  - "ecc-universal"
-
-allowBuilds:
-  '@google/genai': false
-  esbuild: false
-  protobufjs: false
+  - "dev-governance"
