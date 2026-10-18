@@ -1,31 +1,46 @@
-# Diretrizes Globais de Engenharia de Software e Aprendizado
+# Diretrizes Globais de Engenharia de Software e Padrões de Código
 
-## 1. Perfil, Didática e Abordagem de Ensino
-- **Papel:** Atue sempre como um Desenvolvedor Sênior orientando um desenvolvedor júnior.
-- **Formato de Resposta:** NUNCA entregue códigos prontos, mastigados ou cópias literais sem antes explicar detalhadamente o raciocínio.
-- **Foco Pedagógico:** Sempre explique os erros potenciais que poderiam ocorrer, o porquê de cada decisão técnica e os conceitos por trás das funções. Estimule o aprendizado ativo através do debate conceitual. Sempre responda em português, utilizando pronomes adequados ("você", "se", "lhe").
-
-## 2. Stack Tecnológica Primária (Obrigatório)
-- **Linguagem Principal:** TypeScript (versão estrita / strict mode ativado).
+## 1. Stack Tecnológica Primária (Obrigatório)
+- **Linguagem Principal:** TypeScript em modo estrito (`strict: true`). Proibido o uso de `any` ou type assertions não seguras.
 - **Ecossistema Back-end:** NestJS (modularidade, injeção de dependência nativa, DTOs validados com Zod).
-- **Ecossistema Front-end:** NextJS (Server/Client components bem delimitados, App Router, tipagem rigorosa).
+- **Ecossistema Front-end:** Next.js (App Router, Server/Client Components bem delimitados, tipagem rigorosa de props/estados).
+- **Persistência & Banco:** Prisma ORM com PostgreSQL ou MySQL.
+
+## 2. Matriz de Roteamento Dinâmico de Skills
+Sempre que for iniciar uma tarefa, o agente DEVE ler as diretrizes contidas na skill do domínio correspondente antes de gerar o código:
+
+| Domínio da Task | Tipo de Alteração / Contexto | Skill Obrigatória para Consulta |
+| :--- | :--- | :--- |
+| **Back-end** | Serviços, Módulos, Controllers, DTOs NestJS | `.agent/global/skills/backend-skill/nestjs-patterns/SKILL.md` |
+| **Back-end** | Mapeamento ORM, Queries, Migrações, Transações Prisma | `.agent/global/skills/backend-skill/prisma-patterns/SKILL.md` |
+| **Back-end** | Padrões de Arquitetura de API REST, Repositórios, Services | `.agent/global/skills/backend-skill/backend-patterns/SKILL.md` |
+| **Back-end** | Contrato de API REST, Padrões de URL, Status HTTP, Paginação | `.agent/global/skills/api-design/SKILL.md` |
+| **Front-end** | Componentes React, Hooks, Client/Server Components | `.agent/global/skills/frontend-skills/react-patterns/SKILL.md` |
+| **Front-end** | Estrutura Next.js, App Router, Turbopack, Performance de UI | `.agent/global/skills/frontend-skills/nextjs-turbopack/SKILL.md` |
+| **Front-end** | Otimização de Performance React, Re-renders, Bundle Size | `.agent/global/skills/frontend-skills/react-performance/SKILL.md` |
+| **Front-end / A11y**| Acessibilidade, Semântica HTML, ARIA, Navegação por Teclado | `.agent/global/skills/frontend-skills/frontend-a11y/SKILL.md` |
+| **Testes** | Fluxo TDD (Red-Green-Refactor), Testes de Unidade e Integração | `.agent/global/skills/tdd-workflow/SKILL.md` |
+| **Testes** | Testes de Componentes React, Custom Hooks (RTL + Vitest) | `.agent/global/skills/frontend-skills/react-testing/SKILL.md` |
+| **Testes** | Testes End-to-End (E2E) com Playwright | `.agent/global/skills/e2e-testing/SKILL.md` |
+| **DevOps / Infra** | Dockerfiles, Docker Compose, Multi-stage builds | `.agent/global/skills/docker-patterns/SKILL.md` |
+| **Segurança** | Autenticação, Autorização, Sanitização Zod, JWT, Cookies | `.agent/global/skills/security-review/SKILL.md` |
+| **Resiliência** | Exceções customizadas, Retries, Tratamento de erros | `.agent/global/skills/error-handling/SKILL.md` |
 
 ## 3. Arquitetura e Padrões de Projeto (Core)
-- **Arquitetura:** Domain-Driven Design (DDD) e Clean Architecture.
-  - O **Domínio** (regras de negócio puras) deve ser totalmente agnóstico de frameworks (sem Prisma, sem NestJS, sem Express no núcleo).
-  - A **Infraestrutura** e os adaptadores ficam nas bordas (controllers, repositories ORM, serviços externos).
-- **Princípios de Design:** 
-  - **SOLID:** Aplique rigorosamente (Responsabilidade Única, Aberto/Fixo, etc.).
-  - **DRY (Don't Repeat Yourself):** Extraia funções puras e evite duplicação de lógica.
-  - **KISS (Keep It Simple, Stupid):** Priorize legibilidade e simplicidade.
+- **Domain-Driven Design (DDD) & Clean Architecture:**
+  - **Domínio (`src/domain/`):** Contém regras de negócio puras, entidades e Value Objects. É 100% agnóstico de frameworks (sem NestJS, sem Prisma, sem Express).
+  - **Aplicação (`src/application/`):** Contém Casos de Uso, interfaces de repositórios e DTOs.
+  - **Infraestrutura (`src/infrastructure/`):** Contém implementações concretas (Prisma, controllers NestJS, serviços externos).
+- **Princípios SOLID, DRY e KISS:**
+  - **Single Responsibility:** Métodos e funções devem fazer apenas uma coisa bem feita.
+  - **Inversão de Dependência:** O domínio e a aplicação dependem apenas de abstrações/interfaces.
+  - **DRY:** Extraia funções puras e evite duplicação de lógica de negócio.
 
-## 4. Clean Code, Segurança e Boas Práticas
-- **Validação de Entradas (Zod):** É obrigatório o uso de schemas Zod em todas as fronteiras de entrada de dados para garantir tipagem em tempo de execução e segurança contra payloads maliciosos.
-- **Segurança de Dados:** Nunca retorne entidades de banco de dados diretamente nas respostas; utilize objetos de transferência (DTOs de resposta) para evitar vazamento de senhas, hashes ou propriedades internas.
-- **Funções Pequenas:** Single Responsibility em nível de método (uma função faz apenas uma coisa bem feita).
-- **Tipagem Estricta:** Proibido o uso de `any`. Utilize tipos, interfaces, *generics* e *Type Guards*.
-- **Tratamento de Erros:** Utilize exceções customizadas de domínio e tratamento centralizado (Filters no NestJS / Error Boundaries no NextJS), evitando blocos `try/catch` genéricos espalhados pela regra de negócio.
+## 4. Clean Code, Validação e Segurança Crítica
+- **Validação com Zod:** É obrigatório o uso de schemas Zod em todas as fronteiras de entrada de dados (payloads, query params e DTOs) para garantir tipagem runtime e segurança.
+- **Proteção contra Vazamento de Dados:** NUNCA retorne entidades de banco ou dados sensíveis diretamente nas respostas de API. Utilize DTOs de resposta/Presenters.
+- **Tratamento de Exceções:** Utilize exceções customizadas de domínio herdando de uma classe base (ex: `DomainException`) e tratamento centralizado (Filters no NestJS / Error Boundaries no Next.js). Proibido usar blocos `try/catch` genéricos na regra de negócio.
 
 ## 5. Qualidade e Cobertura de Testes (Definition of Done)
-- **Regra de Ouro:** Nenhuma *feature* ou caso de uso é considerado pronto sem a respectiva cobertura de testes unitários com **Vitest**.
-- **Isolamento:** Use mocks limpos para isolar dependências externas.
+- **Regra de Ouro (TDD):** Nenhuma feature ou caso de uso é considerado pronto sem a respectiva cobertura de testes unitários desenvolvidos com **Vitest** ou **Testing Library**.
+- **Isolamento de Testes:** Utilize mocks limpos para isolar dependências externas durante os testes de Casos de Uso e Domínio.
