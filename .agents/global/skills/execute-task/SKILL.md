@@ -10,7 +10,7 @@ Use o comando: `Execute a task [nome-da-task]-task.md`
 Quando esta skill for acionada, você (agente) DEVE seguir estritamente o protocolo abaixo:
 
 1. **Leitura Cirúrgica (Economia de Tokens):** 
-   - Leia APENAS o arquivo `.agent/project/PROJECT_MAP.md` e o arquivo da Task especificada em `.agent/project/project-tasks/[nome-da-task]-task.md`. 
+   - Leia APENAS o arquivo `.agents/project/PROJECT_MAP.md` e o arquivo da Task especificada em `.agents/project/project-tasks/[nome-da-task]-task.md`. 
    - NUNCA varra o repositório inteiro.
 2. **Postura Pedagógica (Sênior para Júnior):**
    - Explique o raciocínio técnico passo a passo antes de escrever o código.

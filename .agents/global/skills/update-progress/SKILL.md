@@ -1,18 +1,18 @@
 # Skill: Update Progress / Diário de Bordo
 
 ## Descrição
-Gera o relatório retrospectivo de progresso e diário de bordo (`<numero>-<nome-da-task>-log.md`) salvando-o estritamente na pasta `.agent/project/docs/progress/`.
+Gera o relatório retrospectivo de progresso e diário de bordo (`<numero>-<nome-da-task>-log.md`) salvando-o estritamente na pasta `.agents/project/docs/progress/`.
 
 ## Instruções para Execução do Agente
 Quando esta skill for acionada, o agente deve:
 1. **Identificar:** Ler o nome e o número da Task ativa (ex: `001-criar-tarefa`).
 2. **Inspecionar:** Verificar as alterações reais no git (`git status`) e os testes executados.
-3. **Salvar:** Criar o arquivo de log seguindo a convenção de nome exata na pasta `.agent/project/docs/progress/`.
+3. **Salvar:** Criar o arquivo de log seguindo a convenção de nome exata na pasta `.agents/project/docs/progress/`.
 
 ---
 
 ## Template de Saída do Log (Obrigatório)
-O arquivo gerado DEVE ser salvo em: `.agent/project/docs/progress/[NUMERO]-[NOME_DA_TASK]-log.md`
+O arquivo gerado DEVE ser salvo em: `.agents/project/docs/progress/[NUMERO]-[NOME_DA_TASK]-log.md`
 
 # Log de Progresso: [NUMERO] - [NOME_DA_TASK]
 

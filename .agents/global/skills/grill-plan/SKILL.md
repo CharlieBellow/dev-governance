@@ -10,5 +10,5 @@ Quando invocada, impede que a IA gere código de implementação bruto imediatam
    - Apresente perguntas direcionadas e numeradas sequencialmente.
    - Forneça uma resposta recomendada ➡️ para cada pergunta, redigida de forma que um "sim" a aceite.
 3. **Foco Direcionado por Domínio (DDD):** Direcione as perguntas para Clean Architecture (limites entre Domínio e Infraestrutura), validações com Zod, exceções customizadas de domínio e estratégias de testes com Vitest.
-4. **Artefatos de Estado:** Se um termo de domínio ou uma decisão arquitetural importante for acordada durante a entrevista, documente-os ou atualize-os automaticamente na referência local do projeto (`docs/adr/` ou glossário) caso seja solicitado.
+4. **Artefatos de Estado:** Se um termo de domínio ou uma decisão arquitetural importante for acordada durante a entrevista, documente-os ou atualize-os automaticamente na referência local do projeto (`.agents/project/docs/adr/` ou glossário) caso seja solicitado.
 5. **Conclusão:** A entrevista termina apenas quando a árvore de design for totalmente explorada e houver um entendimento mútuo alinhado.

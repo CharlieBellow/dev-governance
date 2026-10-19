@@ -9,8 +9,8 @@ Quebrar uma especificação, plano ou conversa atual em um conjunto de **tarefas
 3. **Pré-fatoração:** Identifique pré-requisitos ou refatorações necessárias ("Torne a mudança fácil, depois faça a mudança fácil").
 4. **Refatores Amplos:** Se uma mudança quebradora abranger todo o código, use uma sequência de expansão e contratação (*expand-contract*).
 
-## Formato de Saída (Arquivos Locais em `docs/tasks/`)
-Escreva um arquivo Markdown por tarefa na pasta **`docs/tasks/<NN>-<slug>.md`**, numerados a partir de `01` em ordem de dependência:
+## Formato de Saída (Arquivos Locais em `.agents/project/tasks/`)
+Escreva um arquivo Markdown por tarefa na pasta **`.agents/project/tasks/<NN>-<slug>.md`**, numerados a partir de `01` em ordem de dependência:
 
 # <NN>: <Título da Tarefa>
 

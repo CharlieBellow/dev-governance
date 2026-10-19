@@ -44,3 +44,17 @@ adicionando a linha: `"dev-governance": "git+https://github.com/CharlieBellow/de
 `bash
 pnpm install
 `
+
+## 4. Adicione no seu arquivo AGENTS.md a informação de que o projeto se utiliza desse repositório para usar as skills:
+
+### Diretrizes do Projeto ###
+Este projeto utiliza o repositório Dev Governance para governança de código.
+
+Siga estritamente as regras de Clean Code, arquitetura limpa e testes em Vitest presentes no repositório.
+Consulte as skills globais disponíveis em ./node_modules/dev-governance/skills/.
+
+## 5. Copie a estrutura de .agents/project na raiz do seu projeto.
+
+Crie um pasta .agents no seu projeto.
+
+Depois de instalar as dependências, procure a pasta dev-governance em node_modules e copie a pasta project e salve na pasta .agents do seu projeto. Essa é uma estrutura de pastas necessária para as skills savarem os arquivos .md gerados.

@@ -4,7 +4,7 @@
 Sintetizar o contexto atual da conversa, decisões arquiteturais (ADRs) e o vocabulário de domínio em uma especificação técnica formal. **NÃO entreviste o usuário;** apenas sintetize o que já foi acordado.
 
 ## Processo e Estrutura de Saída
-Gere um documento de especificação em Markdown seguindo exatamente este template e salve-o em **`docs/specs/<nome-da-feature>-spec.md`**:
+Gere um documento de especificação em Markdown seguindo exatamente este template e salve-o em **`.agents/project/docs/specs/<nome-da-feature>-spec.md`**:
 
 ### 1. Declaração do Problema
 O problema enfrentado pelo usuário sob a perspectiva dele.

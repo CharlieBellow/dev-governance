@@ -1,15 +1,15 @@
 # Skill: Gerar Texto de Pull Request (Smart PR)
 
 ## Descrição
-Lê a Task original (`project-tasks/`) e o Log de Progresso correspondente (`docs/progress/`) para gerar um texto de Pull Request rico, estruturado, profissional e pronto para ser copiado.
+Lê a Task original (`.agents/project/tasks/`) e o Log de Progresso correspondente (`.agents/project/docs/progress/`) para gerar um texto de Pull Request rico, estruturado, profissional e pronto para ser copiado.
 
 ## Como Acionar / Executar
 Use o comando: `Gere o texto da PR para a task [numero]-[nome-da-task]`
 
 ## Instruções para o Agente
 Quando acionado, o agente DEVE:
-1. Ler o arquivo da Task em `.agent/project/project-tasks/[numero]-[nome-da-task]-task.md`.
-2. Ler o arquivo de Log em `.agent/project/docs/progress/[numero]-[nome-da-task]-log.md`.
+1. Ler o arquivo da Task em `.agents/project/project-tasks/[numero]-[nome-da-task]-task.md`.
+2. Ler o arquivo de Log em `.agents/project/docs/progress/[numero]-[nome-da-task]-log.md`.
 3. Sintetizar as informações combinando o problema inicial com a solução implementada, gerando o markdown abaixo.
 
 ---
