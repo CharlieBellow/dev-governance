@@ -1,3 +1,8 @@
+---
+name: execute-task
+description: "Executa uma task/spec de .agents/project/project-tasks/ de forma isolada, lendo só o PROJECT_MAP.md e a task, com Clean Architecture, DDD, validação Zod, testes Vitest obrigatórios e relatório de entrega. Use quando o usuário pedir para executar/implementar uma task pelo nome."
+---
+
 # Skill: Executar Task Unificada
 
 ## Descrição

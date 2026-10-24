@@ -1,4 +1,9 @@
-# Skill: Update Progress / Diário de Bordo
+---
+name: update-progress
+description: "Gera o diário de bordo/log de progresso da task ativa em .agents/project/docs/progress/<numero>-<task>-log.md a partir do git status e dos testes executados. Use quando o usuário pedir para atualizar o progresso ou registrar o log de uma task."
+---
+
+# Skill: Atualizar Progresso / Diário de Bordo
 
 ## Descrição
 Gera o relatório retrospectivo de progresso e diário de bordo (`<numero>-<nome-da-task>-log.md`) salvando-o estritamente na pasta `.agents/project/docs/progress/`.

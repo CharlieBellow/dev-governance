@@ -1,15 +1,15 @@
 ---
 name: e2e-testing
-description: Playwright E2E testing patterns, Page Object Model, configuration, CI/CD integration, artifact management, and flaky test strategies. Use when writing Playwright tests, structuring page objects, or fixing flaky E2E runs in CI.
+description: Padrões de testes E2E com Playwright, Page Object Model, configuração, integração com CI/CD, gerenciamento de artefatos e estratégias para testes instáveis (flaky). Use ao escrever testes Playwright, estruturar page objects ou corrigir execuções E2E instáveis no CI.
 metadata:
   origin: ECC
 ---
 
-# E2E Testing Patterns
+# Padrões de Testes E2E
 
-Comprehensive Playwright patterns for building stable, fast, and maintainable E2E test suites.
+Padrões completos de Playwright para construir suítes E2E estáveis, rápidas e fáceis de manter.
 
-## Test File Organization
+## Organização dos Arquivos de Teste
 
 ```
 tests/
@@ -65,13 +65,13 @@ export class ItemsPage {
 }
 ```
 
-## Test Structure
+## Estrutura do Teste
 
 ```typescript
 import { test, expect } from '@playwright/test'
 import { ItemsPage } from '../../pages/ItemsPage'
 
-test.describe('Item Search', () => {
+test.describe('Busca de itens', () => {
   let itemsPage: ItemsPage
 
   test.beforeEach(async ({ page }) => {
@@ -79,7 +79,7 @@ test.describe('Item Search', () => {
     await itemsPage.goto()
   })
 
-  test('should search by keyword', async ({ page }) => {
+  test('deve buscar por palavra-chave', async ({ page }) => {
     await itemsPage.search('test')
 
     const count = await itemsPage.getItemCount()
@@ -89,7 +89,7 @@ test.describe('Item Search', () => {
     await page.screenshot({ path: 'artifacts/search-results.png' })
   })
 
-  test('should handle no results', async ({ page }) => {
+  test('deve tratar busca sem resultados', async ({ page }) => {
     await itemsPage.search('xyznonexistent123')
 
     await expect(page.locator('[data-testid="no-results"]')).toBeVisible()
@@ -98,7 +98,7 @@ test.describe('Item Search', () => {
 })
 ```
 
-## Playwright Configuration
+## Configuração do Playwright
 
 ```typescript
 import { defineConfig, devices } from '@playwright/test'
@@ -137,61 +137,61 @@ export default defineConfig({
 })
 ```
 
-## Flaky Test Patterns
+## Padrões para Testes Instáveis (Flaky)
 
-### Quarantine
+### Quarentena
 
 ```typescript
-test('flaky: complex search', async ({ page }) => {
-  test.fixme(true, 'Flaky - Issue #123')
-  // test code...
+test('instável: busca complexa', async ({ page }) => {
+  test.fixme(true, 'Instável - Issue #123')
+  // código do teste...
 })
 
-test('conditional skip', async ({ page }) => {
-  test.skip(process.env.CI, 'Flaky in CI - Issue #123')
-  // test code...
+test('skip condicional', async ({ page }) => {
+  test.skip(process.env.CI, 'Instável no CI - Issue #123')
+  // código do teste...
 })
 ```
 
-### Identify Flakiness
+### Identificar Instabilidade
 
 ```bash
 npx playwright test tests/search.spec.ts --repeat-each=10
 npx playwright test tests/search.spec.ts --retries=3
 ```
 
-### Common Causes & Fixes
+### Causas Comuns e Correções
 
-**Race conditions:**
+**Condições de corrida:**
 ```typescript
-// Bad: assumes element is ready
+// Ruim: assume que o elemento está pronto
 await page.click('[data-testid="button"]')
 
-// Good: auto-wait locator
+// Bom: locator com espera automática
 await page.locator('[data-testid="button"]').click()
 ```
 
-**Network timing:**
+**Tempo de rede:**
 ```typescript
-// Bad: arbitrary timeout
+// Ruim: timeout arbitrário
 await page.waitForTimeout(5000)
 
-// Good: wait for specific condition
+// Bom: esperar uma condição específica
 await page.waitForResponse(resp => resp.url().includes('/api/data'))
 ```
 
-**Animation timing:**
+**Tempo de animação:**
 ```typescript
-// Bad: click during animation
+// Ruim: clicar durante a animação
 await page.click('[data-testid="menu-item"]')
 
-// Good: wait for stability
+// Bom: esperar estabilizar
 await page.locator('[data-testid="menu-item"]').waitFor({ state: 'visible' })
 await page.waitForLoadState('networkidle')
 await page.locator('[data-testid="menu-item"]').click()
 ```
 
-## Artifact Management
+## Gerenciamento de Artefatos
 
 ### Screenshots
 
@@ -209,21 +209,21 @@ await browser.startTracing(page, {
   screenshots: true,
   snapshots: true,
 })
-// ... test actions ...
+// ... ações do teste ...
 await browser.stopTracing()
 ```
 
-### Video
+### Vídeo
 
 ```typescript
-// In playwright.config.ts
+// Em playwright.config.ts
 use: {
   video: 'retain-on-failure',
   videosPath: 'artifacts/videos/'
 }
 ```
 
-## CI/CD Integration
+## Integração com CI/CD
 
 ```yaml
 # .github/workflows/e2e.yml
@@ -251,38 +251,38 @@ jobs:
           retention-days: 30
 ```
 
-## Test Report Template
+## Template de Relatório de Testes
 
 ```markdown
-# E2E Test Report
+# Relatório de Testes E2E
 
-**Date:** YYYY-MM-DD HH:MM
-**Duration:** Xm Ys
-**Status:** PASSING / FAILING
+**Data:** AAAA-MM-DD HH:MM
+**Duração:** Xm Ys
+**Status:** PASSANDO / FALHANDO
 
-## Summary
-- Total: X | Passed: Y (Z%) | Failed: A | Flaky: B | Skipped: C
+## Resumo
+- Total: X | Passaram: Y (Z%) | Falharam: A | Instáveis: B | Pulados: C
 
-## Failed Tests
+## Testes com Falha
 
-### test-name
-**File:** `tests/e2e/feature.spec.ts:45`
-**Error:** Expected element to be visible
+### nome-do-teste
+**Arquivo:** `tests/e2e/feature.spec.ts:45`
+**Erro:** Esperava que o elemento estivesse visível
 **Screenshot:** artifacts/failed.png
-**Recommended Fix:** [description]
+**Correção Recomendada:** [descrição]
 
-## Artifacts
-- HTML Report: playwright-report/index.html
+## Artefatos
+- Relatório HTML: playwright-report/index.html
 - Screenshots: artifacts/*.png
-- Videos: artifacts/videos/*.webm
+- Vídeos: artifacts/videos/*.webm
 - Traces: artifacts/*.zip
 ```
 
-## Wallet / Web3 Testing
+## Testes de Carteira / Web3
 
 ```typescript
-test('wallet connection', async ({ page, context }) => {
-  // Mock wallet provider
+test('conexão da carteira', async ({ page, context }) => {
+  // Mock do provider da carteira
   await context.addInitScript(() => {
     window.ethereum = {
       isMetaMask: true,
@@ -300,22 +300,22 @@ test('wallet connection', async ({ page, context }) => {
 })
 ```
 
-## Financial / Critical Flow Testing
+## Testes de Fluxos Financeiros / Críticos
 
 ```typescript
-test('trade execution', async ({ page }) => {
-  // Skip on production — real money
-  test.skip(process.env.NODE_ENV === 'production', 'Skip on production')
+test('execução de trade', async ({ page }) => {
+  // Pular em produção — dinheiro real
+  test.skip(process.env.NODE_ENV === 'production', 'Pular em produção')
 
   await page.goto('/markets/test-market')
   await page.locator('[data-testid="position-yes"]').click()
   await page.locator('[data-testid="trade-amount"]').fill('1.0')
 
-  // Verify preview
+  // Verificar a pré-visualização
   const preview = page.locator('[data-testid="trade-preview"]')
   await expect(preview).toContainText('1.0')
 
-  // Confirm and wait for blockchain
+  // Confirmar e esperar a blockchain
   await page.locator('[data-testid="confirm-trade"]').click()
   await page.waitForResponse(
     resp => resp.url().includes('/api/trade') && resp.status() === 200,

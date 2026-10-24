@@ -1,29 +1,29 @@
 ---
 name: api-design
-description: REST API design patterns including resource naming, status codes, pagination, filtering, error responses, versioning, and rate limiting for production APIs. Use when designing or reviewing REST endpoints, resource names, status codes, pagination, or versioning.
+description: Padrões de design de APIs REST, incluindo nomenclatura de recursos, status codes, paginação, filtros, respostas de erro, versionamento e rate limiting para APIs em produção. Use ao projetar ou revisar endpoints REST, nomes de recursos, status codes, paginação ou versionamento.
 metadata:
   origin: ECC
 ---
 
-# API Design Patterns
+# Padrões de Design de API
 
-Conventions and best practices for designing consistent, developer-friendly REST APIs.
+Convenções e boas práticas para projetar APIs REST consistentes e amigáveis para quem as consome.
 
-## When to Activate
+## Quando Ativar
 
-- Designing new API endpoints
-- Reviewing existing API contracts
-- Adding pagination, filtering, or sorting
-- Implementing error handling for APIs
-- Planning API versioning strategy
-- Building public or partner-facing APIs
+- Ao projetar novos endpoints de API
+- Ao revisar contratos de API existentes
+- Ao adicionar paginação, filtros ou ordenação
+- Ao implementar tratamento de erros em APIs
+- Ao planejar a estratégia de versionamento da API
+- Ao construir APIs públicas ou para parceiros
 
-## Resource Design
+## Design de Recursos
 
-### URL Structure
+### Estrutura de URL
 
 ```
-# Resources are nouns, plural, lowercase, kebab-case
+# Recursos são substantivos, no plural, minúsculos, em kebab-case
 GET    /api/v1/users
 GET    /api/v1/users/:id
 POST   /api/v1/users
@@ -31,90 +31,90 @@ PUT    /api/v1/users/:id
 PATCH  /api/v1/users/:id
 DELETE /api/v1/users/:id
 
-# Sub-resources for relationships
+# Sub-recursos para relacionamentos
 GET    /api/v1/users/:id/orders
 POST   /api/v1/users/:id/orders
 
-# Actions that don't map to CRUD (use verbs sparingly)
+# Ações que não se encaixam em CRUD (use verbos com moderação)
 POST   /api/v1/orders/:id/cancel
 POST   /api/v1/auth/login
 POST   /api/v1/auth/refresh
 ```
 
-### Naming Rules
+### Regras de Nomenclatura
 
 ```
-# GOOD
-/api/v1/team-members          # kebab-case for multi-word resources
-/api/v1/orders?status=active  # query params for filtering
-/api/v1/users/123/orders      # nested resources for ownership
+# BOM
+/api/v1/team-members          # kebab-case para recursos com várias palavras
+/api/v1/orders?status=active  # query params para filtros
+/api/v1/users/123/orders      # recursos aninhados para indicar posse
 
-# BAD
-/api/v1/getUsers              # verb in URL
+# RUIM
+/api/v1/getUsers              # verbo na URL
 /api/v1/user                  # singular (use plural)
-/api/v1/team_members          # snake_case in URLs
-/api/v1/users/123/getOrders   # verb in nested resource
+/api/v1/team_members          # snake_case em URLs
+/api/v1/users/123/getOrders   # verbo em recurso aninhado
 ```
 
-## HTTP Methods and Status Codes
+## Métodos HTTP e Status Codes
 
-### Method Semantics
+### Semântica dos Métodos
 
-| Method | Idempotent | Safe | Use For |
+| Método | Idempotente | Seguro | Use para |
 |--------|-----------|------|---------|
-| GET | Yes | Yes | Retrieve resources |
-| POST | No | No | Create resources, trigger actions |
-| PUT | Yes | No | Full replacement of a resource |
-| PATCH | No* | No | Partial update of a resource |
-| DELETE | Yes | No | Remove a resource |
+| GET | Sim | Sim | Obter recursos |
+| POST | Não | Não | Criar recursos, disparar ações |
+| PUT | Sim | Não | Substituição completa de um recurso |
+| PATCH | Não* | Não | Atualização parcial de um recurso |
+| DELETE | Sim | Não | Remover um recurso |
 
-*PATCH can be made idempotent with proper implementation
+*O PATCH pode ser idempotente com a implementação adequada
 
-### Status Code Reference
-
-```
-# Success
-200 OK                    — GET, PUT, PATCH (with response body)
-201 Created               — POST (include Location header)
-204 No Content            — DELETE, PUT (no response body)
-
-# Client Errors
-400 Bad Request           — Validation failure, malformed JSON
-401 Unauthorized          — Missing or invalid authentication
-403 Forbidden             — Authenticated but not authorized
-404 Not Found             — Resource doesn't exist
-409 Conflict              — Duplicate entry, state conflict
-422 Unprocessable Entity  — Semantically invalid (valid JSON, bad data)
-429 Too Many Requests     — Rate limit exceeded
-
-# Server Errors
-500 Internal Server Error — Unexpected failure (never expose details)
-502 Bad Gateway           — Upstream service failed
-503 Service Unavailable   — Temporary overload, include Retry-After
-```
-
-### Common Mistakes
+### Referência de Status Codes
 
 ```
-# BAD: 200 for everything
+# Sucesso
+200 OK                    — GET, PUT, PATCH (com corpo de resposta)
+201 Created               — POST (inclua o header Location)
+204 No Content            — DELETE, PUT (sem corpo de resposta)
+
+# Erros do Cliente
+400 Bad Request           — Falha de validação, JSON malformado
+401 Unauthorized          — Autenticação ausente ou inválida
+403 Forbidden             — Autenticado, mas sem autorização
+404 Not Found             — O recurso não existe
+409 Conflict              — Entrada duplicada, conflito de estado
+422 Unprocessable Entity  — Semanticamente inválido (JSON válido, dados ruins)
+429 Too Many Requests     — Limite de requisições excedido
+
+# Erros do Servidor
+500 Internal Server Error — Falha inesperada (nunca exponha detalhes)
+502 Bad Gateway           — Serviço upstream falhou
+503 Service Unavailable   — Sobrecarga temporária, inclua Retry-After
+```
+
+### Erros Comuns
+
+```
+# RUIM: 200 para tudo
 { "status": 200, "success": false, "error": "Not found" }
 
-# GOOD: Use HTTP status codes semantically
+# BOM: use os status HTTP de forma semântica
 HTTP/1.1 404 Not Found
-{ "error": { "code": "not_found", "message": "User not found" } }
+{ "error": { "code": "not_found", "message": "Usuário não encontrado" } }
 
-# BAD: 500 for validation errors
-# GOOD: 400 or 422 with field-level details
+# RUIM: 500 para erros de validação
+# BOM: 400 ou 422 com detalhes por campo
 
-# BAD: 200 for created resources
-# GOOD: 201 with Location header
+# RUIM: 200 para recursos criados
+# BOM: 201 com header Location
 HTTP/1.1 201 Created
 Location: /api/v1/users/abc-123
 ```
 
-## Response Format
+## Formato da Resposta
 
-### Success Response
+### Resposta de Sucesso
 
 ```json
 {
@@ -127,7 +127,7 @@ Location: /api/v1/users/abc-123
 }
 ```
 
-### Collection Response (with Pagination)
+### Resposta de Coleção (com Paginação)
 
 ```json
 {
@@ -149,22 +149,22 @@ Location: /api/v1/users/abc-123
 }
 ```
 
-### Error Response
+### Resposta de Erro
 
 ```json
 {
   "error": {
     "code": "validation_error",
-    "message": "Request validation failed",
+    "message": "Falha na validação da requisição",
     "details": [
       {
         "field": "email",
-        "message": "Must be a valid email address",
+        "message": "Deve ser um endereço de e-mail válido",
         "code": "invalid_format"
       },
       {
         "field": "age",
-        "message": "Must be between 0 and 150",
+        "message": "Deve estar entre 0 e 150",
         "code": "out_of_range"
       }
     ]
@@ -172,10 +172,10 @@ Location: /api/v1/users/abc-123
 }
 ```
 
-### Response Envelope Variants
+### Variantes de Envelope de Resposta
 
 ```typescript
-// Option A: Envelope with data wrapper (recommended for public APIs)
+// Opção A: envelope com wrapper data (recomendado para APIs públicas)
 interface ApiResponse<T> {
   data: T;
   meta?: PaginationMeta;
@@ -190,38 +190,38 @@ interface ApiError {
   };
 }
 
-// Option B: Flat response (simpler, common for internal APIs)
-// Success: just return the resource directly
-// Error: return error object
-// Distinguish by HTTP status code
+// Opção B: resposta plana (mais simples, comum em APIs internas)
+// Sucesso: retorne o recurso diretamente
+// Erro: retorne o objeto de erro
+// Diferencie pelo status HTTP
 ```
 
-## Pagination
+## Paginação
 
-### Offset-Based (Simple)
+### Baseada em Offset (Simples)
 
 ```
 GET /api/v1/users?page=2&per_page=20
 
-# Implementation
+# Implementação
 SELECT * FROM users
 ORDER BY created_at DESC
 LIMIT 20 OFFSET 20;
 ```
 
-**Pros:** Easy to implement, supports "jump to page N"
-**Cons:** Slow on large offsets (OFFSET 100000), inconsistent with concurrent inserts
+**Prós:** fácil de implementar, permite "pular para a página N"
+**Contras:** lenta com offsets grandes (OFFSET 100000), inconsistente com inserções concorrentes
 
-### Cursor-Based (Scalable)
+### Baseada em Cursor (Escalável)
 
 ```
 GET /api/v1/users?cursor=eyJpZCI6MTIzfQ&limit=20
 
-# Implementation
+# Implementação
 SELECT * FROM users
 WHERE id > :cursor_id
 ORDER BY id ASC
-LIMIT 21;  -- fetch one extra to determine has_next
+LIMIT 21;  -- busca um a mais para saber se há próxima página
 ```
 
 ```json
@@ -234,83 +234,83 @@ LIMIT 21;  -- fetch one extra to determine has_next
 }
 ```
 
-**Pros:** Consistent performance regardless of position, stable with concurrent inserts
-**Cons:** Cannot jump to arbitrary page, cursor is opaque
+**Prós:** performance consistente independentemente da posição, estável com inserções concorrentes
+**Contras:** não permite pular para uma página arbitrária, o cursor é opaco
 
-### When to Use Which
+### Quando Usar Cada Uma
 
-| Use Case | Pagination Type |
+| Caso de uso | Tipo de paginação |
 |----------|----------------|
-| Admin dashboards, small datasets (<10K) | Offset |
-| Infinite scroll, feeds, large datasets | Cursor |
-| Public APIs | Cursor (default) with offset (optional) |
-| Search results | Offset (users expect page numbers) |
+| Painéis de admin, conjuntos pequenos (<10K) | Offset |
+| Scroll infinito, feeds, grandes volumes | Cursor |
+| APIs públicas | Cursor (padrão) com offset (opcional) |
+| Resultados de busca | Offset (usuários esperam números de página) |
 
-## Filtering, Sorting, and Search
+## Filtros, Ordenação e Busca
 
-### Filtering
+### Filtros
 
 ```
-# Simple equality
+# Igualdade simples
 GET /api/v1/orders?status=active&customer_id=abc-123
 
-# Comparison operators (use bracket notation)
+# Operadores de comparação (use notação com colchetes)
 GET /api/v1/products?price[gte]=10&price[lte]=100
 GET /api/v1/orders?created_at[after]=2025-01-01
 
-# Multiple values (comma-separated)
+# Múltiplos valores (separados por vírgula)
 GET /api/v1/products?category=electronics,clothing
 
-# Nested fields (dot notation)
+# Campos aninhados (notação com ponto)
 GET /api/v1/orders?customer.country=US
 ```
 
-### Sorting
+### Ordenação
 
 ```
-# Single field (prefix - for descending)
+# Um campo (prefixo - para decrescente)
 GET /api/v1/products?sort=-created_at
 
-# Multiple fields (comma-separated)
+# Vários campos (separados por vírgula)
 GET /api/v1/products?sort=-featured,price,-created_at
 ```
 
-### Full-Text Search
+### Busca Textual
 
 ```
-# Search query parameter
+# Parâmetro de busca
 GET /api/v1/products?q=wireless+headphones
 
-# Field-specific search
+# Busca em campo específico
 GET /api/v1/users?email=alice
 ```
 
-### Sparse Fieldsets
+### Conjuntos Esparsos de Campos
 
 ```
-# Return only specified fields (reduces payload)
+# Retorna apenas os campos especificados (reduz o payload)
 GET /api/v1/users?fields=id,name,email
 GET /api/v1/orders?fields=id,total,status&include=customer.name
 ```
 
-## Authentication and Authorization
+## Autenticação e Autorização
 
-### Token-Based Auth
+### Autenticação por Token
 
 ```
-# Bearer token in Authorization header
+# Bearer token no header Authorization
 GET /api/v1/users
 Authorization: Bearer eyJhbGciOiJIUzI1NiIs...
 
-# API key (for server-to-server)
+# Chave de API (para servidor-a-servidor)
 GET /api/v1/data
 X-API-Key: sk_live_...
 ```
 
-### Authorization Patterns
+### Padrões de Autorização
 
 ```typescript
-// Resource-level: check ownership
+// No nível do recurso: verificar posse
 app.get("/api/v1/orders/:id", async (req, res) => {
   const order = await Order.findById(req.params.id);
   if (!order) return res.status(404).json({ error: { code: "not_found" } });
@@ -318,7 +318,7 @@ app.get("/api/v1/orders/:id", async (req, res) => {
   return res.json({ data: order });
 });
 
-// Role-based: check permissions
+// Baseado em papel: verificar permissões
 app.delete("/api/v1/users/:id", requireRole("admin"), async (req, res) => {
   await User.delete(req.params.id);
   return res.status(204).send();
@@ -335,69 +335,69 @@ X-RateLimit-Limit: 100
 X-RateLimit-Remaining: 95
 X-RateLimit-Reset: 1640000000
 
-# When exceeded
+# Quando excedido
 HTTP/1.1 429 Too Many Requests
 Retry-After: 60
 {
   "error": {
     "code": "rate_limit_exceeded",
-    "message": "Rate limit exceeded. Try again in 60 seconds."
+    "message": "Limite de requisições excedido. Tente novamente em 60 segundos."
   }
 }
 ```
 
-### Rate Limit Tiers
+### Níveis de Rate Limit
 
-| Tier | Limit | Window | Use Case |
+| Nível | Limite | Janela | Caso de uso |
 |------|-------|--------|----------|
-| Anonymous | 30/min | Per IP | Public endpoints |
-| Authenticated | 100/min | Per user | Standard API access |
-| Premium | 1000/min | Per API key | Paid API plans |
-| Internal | 10000/min | Per service | Service-to-service |
+| Anônimo | 30/min | Por IP | Endpoints públicos |
+| Autenticado | 100/min | Por usuário | Acesso padrão à API |
+| Premium | 1000/min | Por chave de API | Planos pagos da API |
+| Interno | 10000/min | Por serviço | Serviço-a-serviço |
 
-## Versioning
+## Versionamento
 
-### URL Path Versioning (Recommended)
+### Versionamento no Caminho da URL (Recomendado)
 
 ```
 /api/v1/users
 /api/v2/users
 ```
 
-**Pros:** Explicit, easy to route, cacheable
-**Cons:** URL changes between versions
+**Prós:** explícito, fácil de rotear, cacheável
+**Contras:** a URL muda entre versões
 
-### Header Versioning
+### Versionamento por Header
 
 ```
 GET /api/users
 Accept: application/vnd.myapp.v2+json
 ```
 
-**Pros:** Clean URLs
-**Cons:** Harder to test, easy to forget
+**Prós:** URLs limpas
+**Contras:** mais difícil de testar, fácil de esquecer
 
-### Versioning Strategy
+### Estratégia de Versionamento
 
 ```
-1. Start with /api/v1/ — don't version until you need to
-2. Maintain at most 2 active versions (current + previous)
-3. Deprecation timeline:
-   - Announce deprecation (6 months notice for public APIs)
-   - Add Sunset header: Sunset: Sat, 01 Jan 2026 00:00:00 GMT
-   - Return 410 Gone after sunset date
-4. Non-breaking changes don't need a new version:
-   - Adding new fields to responses
-   - Adding new optional query parameters
-   - Adding new endpoints
-5. Breaking changes require a new version:
-   - Removing or renaming fields
-   - Changing field types
-   - Changing URL structure
-   - Changing authentication method
+1. Comece com /api/v1/ — não crie novas versões até precisar
+2. Mantenha no máximo 2 versões ativas (atual + anterior)
+3. Cronograma de descontinuação:
+   - Anuncie a descontinuação (aviso de 6 meses para APIs públicas)
+   - Adicione o header Sunset: Sunset: Sat, 01 Jan 2026 00:00:00 GMT
+   - Retorne 410 Gone após a data de sunset
+4. Mudanças que não quebram compatibilidade não precisam de nova versão:
+   - Adicionar novos campos às respostas
+   - Adicionar novos query parameters opcionais
+   - Adicionar novos endpoints
+5. Mudanças que quebram compatibilidade exigem nova versão:
+   - Remover ou renomear campos
+   - Mudar o tipo de campos
+   - Mudar a estrutura da URL
+   - Mudar o método de autenticação
 ```
 
-## Implementation Patterns
+## Padrões de Implementação
 
 ### TypeScript (Next.js API Route)
 
@@ -418,7 +418,7 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({
       error: {
         code: "validation_error",
-        message: "Request validation failed",
+        message: "Falha na validação da requisição",
         details: parsed.error.issues.map(i => ({
           field: i.path.join("."),
           message: i.message,
@@ -481,7 +481,7 @@ class UserViewSet(viewsets.ModelViewSet):
 func (h *UserHandler) CreateUser(w http.ResponseWriter, r *http.Request) {
     var req CreateUserRequest
     if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
-        writeError(w, http.StatusBadRequest, "invalid_json", "Invalid request body")
+        writeError(w, http.StatusBadRequest, "invalid_json", "Corpo da requisição inválido")
         return
     }
 
@@ -494,9 +494,9 @@ func (h *UserHandler) CreateUser(w http.ResponseWriter, r *http.Request) {
     if err != nil {
         switch {
         case errors.Is(err, domain.ErrEmailTaken):
-            writeError(w, http.StatusConflict, "email_taken", "Email already registered")
+            writeError(w, http.StatusConflict, "email_taken", "E-mail já cadastrado")
         default:
-            writeError(w, http.StatusInternalServerError, "internal_error", "Internal error")
+            writeError(w, http.StatusInternalServerError, "internal_error", "Erro interno")
         }
         return
     }
@@ -506,19 +506,19 @@ func (h *UserHandler) CreateUser(w http.ResponseWriter, r *http.Request) {
 }
 ```
 
-## API Design Checklist
+## Checklist de Design de API
 
-Before shipping a new endpoint:
+Antes de publicar um novo endpoint:
 
-- [ ] Resource URL follows naming conventions (plural, kebab-case, no verbs)
-- [ ] Correct HTTP method used (GET for reads, POST for creates, etc.)
-- [ ] Appropriate status codes returned (not 200 for everything)
-- [ ] Input validated with schema (Zod, Pydantic, Bean Validation)
-- [ ] Error responses follow standard format with codes and messages
-- [ ] Pagination implemented for list endpoints (cursor or offset)
-- [ ] Authentication required (or explicitly marked as public)
-- [ ] Authorization checked (user can only access their own resources)
-- [ ] Rate limiting configured
-- [ ] Response does not leak internal details (stack traces, SQL errors)
-- [ ] Consistent naming with existing endpoints (camelCase vs snake_case)
-- [ ] Documented (OpenAPI/Swagger spec updated)
+- [ ] A URL do recurso segue as convenções de nomenclatura (plural, kebab-case, sem verbos)
+- [ ] O método HTTP correto é usado (GET para leitura, POST para criação etc.)
+- [ ] Status codes adequados são retornados (não 200 para tudo)
+- [ ] A entrada é validada com schema (Zod, Pydantic, Bean Validation)
+- [ ] As respostas de erro seguem o formato padrão com códigos e mensagens
+- [ ] Há paginação nos endpoints de listagem (cursor ou offset)
+- [ ] Autenticação exigida (ou marcada explicitamente como pública)
+- [ ] Autorização verificada (o usuário só acessa os próprios recursos)
+- [ ] Rate limiting configurado
+- [ ] A resposta não vaza detalhes internos (stack traces, erros de SQL)
+- [ ] Nomenclatura consistente com os endpoints existentes (camelCase vs snake_case)
+- [ ] Documentado (spec OpenAPI/Swagger atualizada)

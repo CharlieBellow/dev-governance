@@ -1,36 +1,36 @@
 ---
 name: error-handling
-description: Patterns for robust error handling across TypeScript, Python, and Go. Covers typed errors, error boundaries, retries, circuit breakers, and user-facing error messages. Use when designing error types, retries, circuit breakers, or user-facing failure messages in TypeScript, Python, or Go.
+description: Padrões de tratamento de erros robusto em TypeScript, Python e Go. Cobre erros tipados, error boundaries, retries, circuit breakers e mensagens de erro para o usuário. Use ao projetar tipos de erro, retries, circuit breakers ou mensagens de falha exibidas ao usuário em TypeScript, Python ou Go.
 metadata:
   origin: ECC
 ---
 
-# Error Handling Patterns
+# Padrões de Tratamento de Erros
 
-Consistent, robust error handling patterns for production applications.
+Padrões consistentes e robustos de tratamento de erros para aplicações em produção.
 
-## When to Activate
+## Quando Ativar
 
-- Designing error types or exception hierarchies for a new module or service
-- Adding retry logic or circuit breakers for unreliable external dependencies
-- Reviewing API endpoints for missing error handling
-- Implementing user-facing error messages and feedback
-- Debugging cascading failures or silent error swallowing
+- Ao projetar tipos de erro ou hierarquias de exceção para um novo módulo ou serviço
+- Ao adicionar lógica de retry ou circuit breakers para dependências externas instáveis
+- Ao revisar endpoints de API em busca de tratamento de erro ausente
+- Ao implementar mensagens de erro e feedback para o usuário
+- Ao depurar falhas em cascata ou erros engolidos silenciosamente
 
-## Core Principles
+## Princípios Fundamentais
 
-1. **Fail fast and loudly** — surface errors at the boundary where they occur; don't bury them
-2. **Typed errors over string messages** — errors are first-class values with structure
-3. **User messages ≠ developer messages** — show friendly text to users, log full context server-side
-4. **Never swallow errors silently** — every `catch` block must either handle, re-throw, or log
-5. **Errors are part of your API contract** — document every error code a client may receive
+1. **Falhe cedo e de forma visível** — exponha o erro na fronteira onde ele ocorre; não o enterre
+2. **Erros tipados em vez de mensagens em string** — erros são valores de primeira classe, com estrutura
+3. **Mensagem para o usuário ≠ mensagem para o desenvolvedor** — mostre texto amigável ao usuário e registre o contexto completo no servidor
+4. **Nunca engula erros silenciosamente** — todo bloco `catch` deve tratar, relançar ou registrar em log
+5. **Erros fazem parte do contrato da sua API** — documente todo código de erro que um cliente pode receber
 
 ## TypeScript / JavaScript
 
-### Typed Error Classes
+### Classes de Erro Tipadas
 
 ```typescript
-// Define an error hierarchy for your domain
+// Defina uma hierarquia de erros para o seu domínio
 export class AppError extends Error {
   constructor(
     message: string,
@@ -40,16 +40,16 @@ export class AppError extends Error {
   ) {
     super(message)
     this.name = this.constructor.name
-    // Maintain correct prototype chain in transpiled ES5 JavaScript.
-    // Required for `instanceof` checks (e.g., `error instanceof NotFoundError`)
-    // to work correctly when extending the built-in Error class.
+    // Mantém a cadeia de protótipos correta em JavaScript transpilado para ES5.
+    // Necessário para que checagens com `instanceof` (ex.: `error instanceof NotFoundError`)
+    // funcionem corretamente ao estender a classe Error nativa.
     Object.setPrototypeOf(this, new.target.prototype)
   }
 }
 
 export class NotFoundError extends AppError {
   constructor(resource: string, id: string) {
-    super(`${resource} not found: ${id}`, 'NOT_FOUND', 404)
+    super(`${resource} não encontrado: ${id}`, 'NOT_FOUND', 404)
   }
 }
 
@@ -60,21 +60,21 @@ export class ValidationError extends AppError {
 }
 
 export class UnauthorizedError extends AppError {
-  constructor(reason = 'Authentication required') {
+  constructor(reason = 'Autenticação necessária') {
     super(reason, 'UNAUTHORIZED', 401)
   }
 }
 
 export class RateLimitError extends AppError {
   constructor(public readonly retryAfterMs: number) {
-    super('Rate limit exceeded', 'RATE_LIMITED', 429)
+    super('Limite de requisições excedido', 'RATE_LIMITED', 429)
   }
 }
 ```
 
-### Result Pattern (no-throw style)
+### Padrão Result (estilo sem throw)
 
-For operations where failure is expected and common (parsing, external calls):
+Para operações em que a falha é esperada e comum (parsing, chamadas externas):
 
 ```typescript
 type Result<T, E = AppError> =
@@ -89,34 +89,34 @@ function err<E>(error: E): Result<never, E> {
   return { ok: false, error }
 }
 
-// Usage
+// Uso
 async function fetchUser(id: string): Promise<Result<User>> {
   try {
     const user = await db.users.findUnique({ where: { id } })
     if (!user) return err(new NotFoundError('User', id))
     return ok(user)
   } catch (e) {
-    return err(new AppError('Database error', 'DB_ERROR'))
+    return err(new AppError('Erro no banco de dados', 'DB_ERROR'))
   }
 }
 
 const result = await fetchUser('abc-123')
 if (!result.ok) {
-  // TypeScript knows result.error here
-  logger.error('Failed to fetch user', { error: result.error })
+  // Aqui o TypeScript conhece result.error
+  logger.error('Falha ao buscar usuário', { error: result.error })
   return
 }
-// TypeScript knows result.value here
+// Aqui o TypeScript conhece result.value
 console.log(result.value.email)
 ```
 
-### API Error Handler (Next.js / Express)
+### Handler de Erros de API (Next.js / Express)
 
 ```typescript
 import { NextRequest, NextResponse } from 'next/server'
 
 function handleApiError(error: unknown): NextResponse {
-  // Known application error
+  // Erro conhecido da aplicação
   if (error instanceof AppError) {
     return NextResponse.json(
       {
@@ -130,13 +130,13 @@ function handleApiError(error: unknown): NextResponse {
     )
   }
 
-  // Zod validation error
+  // Erro de validação do Zod
   if (error instanceof z.ZodError) {
     return NextResponse.json(
       {
         error: {
           code: 'VALIDATION_ERROR',
-          message: 'Request validation failed',
+          message: 'Falha na validação da requisição',
           details: error.issues.map(i => ({
             field: i.path.join('.'),
             message: i.message,
@@ -147,24 +147,24 @@ function handleApiError(error: unknown): NextResponse {
     )
   }
 
-  // Unexpected error — log details, return generic message
-  console.error('Unexpected error:', error)
+  // Erro inesperado — registre os detalhes e retorne uma mensagem genérica
+  console.error('Erro inesperado:', error)
   return NextResponse.json(
-    { error: { code: 'INTERNAL_ERROR', message: 'An unexpected error occurred' } },
+    { error: { code: 'INTERNAL_ERROR', message: 'Ocorreu um erro inesperado' } },
     { status: 500 },
   )
 }
 
 export async function POST(req: NextRequest) {
   try {
-    // ... handler logic
+    // ... lógica do handler
   } catch (error) {
     return handleApiError(error)
   }
 }
 ```
 
-### React Error Boundary
+### Error Boundary no React
 
 ```typescript
 import { Component, ErrorInfo, ReactNode } from 'react'
@@ -189,7 +189,7 @@ export class ErrorBoundary extends Component<Props, State> {
 
   componentDidCatch(error: Error, info: ErrorInfo) {
     this.props.onError?.(error, info)
-    console.error('Unhandled React error:', error, info)
+    console.error('Erro não tratado no React:', error, info)
   }
 
   render() {
@@ -198,19 +198,19 @@ export class ErrorBoundary extends Component<Props, State> {
   }
 }
 
-// Usage
-<ErrorBoundary fallback={<p>Something went wrong. Please refresh.</p>}>
+// Uso
+<ErrorBoundary fallback={<p>Algo deu errado. Recarregue a página.</p>}>
   <MyComponent />
 </ErrorBoundary>
 ```
 
 ## Python
 
-### Custom Exception Hierarchy
+### Hierarquia de Exceções Customizada
 
 ```python
 class AppError(Exception):
-    """Base application error."""
+    """Erro base da aplicação."""
     def __init__(self, message: str, code: str, status_code: int = 500):
         super().__init__(message)
         self.code = code
@@ -218,7 +218,7 @@ class AppError(Exception):
 
 class NotFoundError(AppError):
     def __init__(self, resource: str, id: str):
-        super().__init__(f"{resource} not found: {id}", "NOT_FOUND", 404)
+        super().__init__(f"{resource} não encontrado: {id}", "NOT_FOUND", 404)
 
 class ValidationError(AppError):
     def __init__(self, message: str, details: list[dict] | None = None):
@@ -226,7 +226,7 @@ class ValidationError(AppError):
         self.details = details or []
 ```
 
-### FastAPI Global Exception Handler
+### Handler Global de Exceções no FastAPI
 
 ```python
 from fastapi import FastAPI, Request
@@ -243,31 +243,31 @@ async def app_error_handler(request: Request, exc: AppError) -> JSONResponse:
 
 @app.exception_handler(Exception)
 async def generic_error_handler(request: Request, exc: Exception) -> JSONResponse:
-    # Log full details, return generic message
-    logger.exception("Unexpected error", exc_info=exc)
+    # Registre os detalhes completos e retorne uma mensagem genérica
+    logger.exception("Erro inesperado", exc_info=exc)
     return JSONResponse(
         status_code=500,
-        content={"error": {"code": "INTERNAL_ERROR", "message": "An unexpected error occurred"}},
+        content={"error": {"code": "INTERNAL_ERROR", "message": "Ocorreu um erro inesperado"}},
     )
 ```
 
 ## Go
 
-### Sentinel Errors and Error Wrapping
+### Erros Sentinela e Encapsulamento de Erros
 
 ```go
 package domain
 
 import "errors"
 
-// Sentinel errors for type-checking
+// Erros sentinela para checagem de tipo
 var (
     ErrNotFound    = errors.New("not found")
     ErrUnauthorized = errors.New("unauthorized")
     ErrConflict     = errors.New("conflict")
 )
 
-// Wrap errors with context — never lose the original
+// Encapsule erros com contexto — nunca perca o original
 func (r *UserRepository) FindByID(ctx context.Context, id string) (*User, error) {
     user, err := r.db.QueryRow(ctx, "SELECT * FROM users WHERE id = $1", id)
     if errors.Is(err, sql.ErrNoRows) {
@@ -279,7 +279,7 @@ func (r *UserRepository) FindByID(ctx context.Context, id string) (*User, error)
     return user, nil
 }
 
-// At the handler level, unwrap to determine response
+// No nível do handler, desencapsule para decidir a resposta
 func (h *Handler) GetUser(w http.ResponseWriter, r *http.Request) {
     user, err := h.service.GetUser(r.Context(), chi.URLParam(r, "id"))
     if err != nil {
@@ -287,10 +287,10 @@ func (h *Handler) GetUser(w http.ResponseWriter, r *http.Request) {
         case errors.Is(err, domain.ErrNotFound):
             writeError(w, http.StatusNotFound, "not_found", err.Error())
         case errors.Is(err, domain.ErrUnauthorized):
-            writeError(w, http.StatusForbidden, "forbidden", "Access denied")
+            writeError(w, http.StatusForbidden, "forbidden", "Acesso negado")
         default:
             slog.Error("unexpected error", "err", err)
-            writeError(w, http.StatusInternalServerError, "internal_error", "An unexpected error occurred")
+            writeError(w, http.StatusInternalServerError, "internal_error", "Ocorreu um erro inesperado")
         }
         return
     }
@@ -298,7 +298,7 @@ func (h *Handler) GetUser(w http.ResponseWriter, r *http.Request) {
 }
 ```
 
-## Retry with Exponential Backoff
+## Retry com Backoff Exponencial
 
 ```typescript
 interface RetryOptions {
@@ -337,25 +337,25 @@ async function withRetry<T>(
   throw lastError
 }
 
-// Usage: retry transient network errors, not 4xx
+// Uso: repetir erros de rede transitórios, não 4xx
 const data = await withRetry(() => fetch('/api/data').then(r => r.json()), {
   maxAttempts: 3,
   retryIf: (error) => !(error instanceof AppError && error.statusCode < 500),
 })
 ```
 
-## User-Facing Error Messages
+## Mensagens de Erro para o Usuário
 
-Map error codes to human-readable messages. Keep technical details out of user-visible text.
+Mapeie códigos de erro para mensagens legíveis. Mantenha detalhes técnicos fora do texto visível ao usuário.
 
 ```typescript
 const USER_ERROR_MESSAGES: Record<string, string> = {
-  NOT_FOUND: 'The requested item could not be found.',
-  UNAUTHORIZED: 'Please sign in to continue.',
-  FORBIDDEN: "You don't have permission to do that.",
-  VALIDATION_ERROR: 'Please check your input and try again.',
-  RATE_LIMITED: 'Too many requests. Please wait a moment and try again.',
-  INTERNAL_ERROR: 'Something went wrong on our end. Please try again later.',
+  NOT_FOUND: 'O item solicitado não foi encontrado.',
+  UNAUTHORIZED: 'Faça login para continuar.',
+  FORBIDDEN: 'Você não tem permissão para fazer isso.',
+  VALIDATION_ERROR: 'Verifique os dados informados e tente novamente.',
+  RATE_LIMITED: 'Muitas requisições. Aguarde um momento e tente novamente.',
+  INTERNAL_ERROR: 'Algo deu errado do nosso lado. Tente novamente mais tarde.',
 }
 
 export function getUserMessage(code: string): string {
@@ -363,15 +363,15 @@ export function getUserMessage(code: string): string {
 }
 ```
 
-## Error Handling Checklist
+## Checklist de Tratamento de Erros
 
-Before merging any code that touches error handling:
+Antes de fazer merge de qualquer código que mexa em tratamento de erros:
 
-- [ ] Every `catch` block handles, re-throws, or logs — no silent swallowing
-- [ ] API errors follow the standard envelope `{ error: { code, message } }`
-- [ ] User-facing messages contain no stack traces or internal details
-- [ ] Full error context is logged server-side
-- [ ] Custom error classes extend a base `AppError` with a `code` field
-- [ ] Async functions surface errors to callers — no fire-and-forget without fallback
-- [ ] Retry logic only retries retriable errors (not 4xx client errors)
-- [ ] React components are wrapped in `ErrorBoundary` for rendering errors
+- [ ] Todo bloco `catch` trata, relança ou registra em log — nada engolido silenciosamente
+- [ ] Erros de API seguem o envelope padrão `{ error: { code, message } }`
+- [ ] Mensagens para o usuário não contêm stack traces nem detalhes internos
+- [ ] O contexto completo do erro é registrado no servidor
+- [ ] Classes de erro customizadas estendem um `AppError` base com campo `code`
+- [ ] Funções assíncronas propagam erros para quem as chama — nada de "disparar e esquecer" sem fallback
+- [ ] A lógica de retry só repete erros recuperáveis (não erros 4xx do cliente)
+- [ ] Componentes React estão envolvidos em `ErrorBoundary` para erros de renderização

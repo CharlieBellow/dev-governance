@@ -1,3 +1,8 @@
+---
+name: to-tickets
+description: "Quebra uma spec, plano ou conversa em tasks de fatia vertical (tracer-bullets) com dependências, salvas em .agents/project/tasks/<NN>-<slug>.md. Use quando o usuário pedir para fatiar uma spec em tasks/tickets."
+---
+
 # Skill: To Tickets (Fatiamento Vertical e Quebra de Tarefas)
 
 ## Propósito

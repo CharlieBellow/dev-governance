@@ -23,7 +23,7 @@ Sempre que for iniciar uma tarefa, o agente DEVE ler as diretrizes contidas na s
 | **Testes** | Testes de Componentes React, Custom Hooks (RTL + Vitest) | `.agent/global/skills/frontend-skills/react-testing/SKILL.md` |
 | **Testes** | Testes End-to-End (E2E) com Playwright | `.agent/global/skills/e2e-testing/SKILL.md` |
 | **DevOps / Infra** | Dockerfiles, Docker Compose, Multi-stage builds | `.agent/global/skills/docker-patterns/SKILL.md` |
-| **Segurança** | Autenticação, Autorização, Sanitização Zod, JWT, Cookies | `.agent/global/skills/security-review/SKILL.md` |
+| **Segurança** | Autenticação, Autorização, Sanitização Zod, JWT, Cookies | `.agent/global/skills/dg-security-review/SKILL.md` |
 | **Resiliência** | Exceções customizadas, Retries, Tratamento de erros | `.agent/global/skills/error-handling/SKILL.md` |
 
 ## 3. Arquitetura e Padrões de Projeto (Core)

@@ -1,23 +1,23 @@
 ---
 name: nestjs-patterns
-description: NestJS architecture patterns for modules, controllers, providers, DTO validation, guards, interceptors, config, and production-grade TypeScript backends. Use when building or reviewing a NestJS backend — modules, providers, DTO validation, guards, or interceptors.
+description: Padrões de arquitetura NestJS para módulos, controllers, providers, validação de DTOs, guards, interceptors, configuração e backends TypeScript prontos para produção. Use ao construir ou revisar um backend NestJS — módulos, providers, validação de DTOs, guards ou interceptors.
 metadata:
   origin: ECC
 ---
 
-# NestJS Development Patterns
+# Padrões de Desenvolvimento NestJS
 
-Production-grade NestJS patterns for modular TypeScript backends.
+Padrões NestJS prontos para produção em backends TypeScript modulares.
 
-## When to Activate
+## Quando Ativar
 
-- Building NestJS APIs or services
-- Structuring modules, controllers, and providers
-- Adding DTO validation, guards, interceptors, or exception filters
-- Configuring environment-aware settings and database integrations
-- Testing NestJS units or HTTP endpoints
+- Ao construir APIs ou serviços NestJS
+- Ao estruturar módulos, controllers e providers
+- Ao adicionar validação de DTOs, guards, interceptors ou exception filters
+- Ao configurar settings por ambiente e integrações com banco de dados
+- Ao testar unidades NestJS ou endpoints HTTP
 
-## Project Structure
+## Estrutura do Projeto
 
 ```text
 src/
@@ -45,14 +45,14 @@ src/
 │       ├── users.controller.ts
 │       ├── users.module.ts
 │       └── users.service.ts
-└── prisma/ or database/
+└── prisma/ ou database/
 ```
 
-- Keep domain code inside feature modules.
-- Put cross-cutting filters, decorators, guards, and interceptors in `common/`.
-- Keep DTOs close to the module that owns them.
+- Mantenha o código de domínio dentro dos módulos de funcionalidade.
+- Coloque filters, decorators, guards e interceptors transversais em `common/`.
+- Mantenha os DTOs próximos do módulo que os possui.
 
-## Bootstrap and Global Validation
+## Bootstrap e Validação Global
 
 ```ts
 async function bootstrap() {
@@ -75,10 +75,10 @@ async function bootstrap() {
 bootstrap();
 ```
 
-- Always enable `whitelist` and `forbidNonWhitelisted` on public APIs.
-- Prefer one global validation pipe instead of repeating validation config per route.
+- Sempre ative `whitelist` e `forbidNonWhitelisted` em APIs públicas.
+- Prefira um único pipe de validação global em vez de repetir a configuração por rota.
 
-## Modules, Controllers, and Providers
+## Módulos, Controllers e Providers
 
 ```ts
 @Module({
@@ -113,11 +113,11 @@ export class UsersService {
 }
 ```
 
-- Controllers should stay thin: parse HTTP input, call a provider, return response DTOs.
-- Put business logic in injectable services, not controllers.
-- Export only the providers other modules genuinely need.
+- Controllers devem ser finos: interpretam a entrada HTTP, chamam um provider e retornam DTOs de resposta.
+- Coloque a lógica de negócio em services injetáveis, não nos controllers.
+- Exporte apenas os providers de que outros módulos realmente precisam.
 
-## DTOs and Validation
+## DTOs e Validação
 
 ```ts
 export class CreateUserDto {
@@ -134,11 +134,11 @@ export class CreateUserDto {
 }
 ```
 
-- Validate every request DTO with `class-validator`.
-- Use dedicated response DTOs or serializers instead of returning ORM entities directly.
-- Avoid leaking internal fields such as password hashes, tokens, or audit columns.
+- Valide todo DTO de requisição com `class-validator`.
+- Use DTOs de resposta ou serializers dedicados em vez de retornar entidades do ORM diretamente.
+- Evite vazar campos internos, como hashes de senha, tokens ou colunas de auditoria.
 
-## Auth, Guards, and Request Context
+## Autenticação, Guards e Contexto da Requisição
 
 ```ts
 @UseGuards(JwtAuthGuard, RolesGuard)
@@ -149,11 +149,11 @@ getAdminReport(@Req() req: AuthenticatedRequest) {
 }
 ```
 
-- Keep auth strategies and guards module-local unless they are truly shared.
-- Encode coarse access rules in guards, then do resource-specific authorization in services.
-- Prefer explicit request types for authenticated request objects.
+- Mantenha estratégias de autenticação e guards locais ao módulo, a menos que sejam realmente compartilhados.
+- Codifique regras de acesso amplas nos guards e faça a autorização específica do recurso nos services.
+- Prefira tipos explícitos para objetos de requisição autenticada.
 
-## Exception Filters and Error Shape
+## Exception Filters e Formato do Erro
 
 ```ts
 @Catch()
@@ -177,10 +177,10 @@ export class HttpExceptionFilter implements ExceptionFilter {
 }
 ```
 
-- Keep one consistent error envelope across the API.
-- Throw framework exceptions for expected client errors; log and wrap unexpected failures centrally.
+- Mantenha um envelope de erro consistente em toda a API.
+- Lance exceções do framework para erros esperados do cliente; registre em log e encapsule falhas inesperadas de forma centralizada.
 
-## Config and Environment Validation
+## Configuração e Validação do Ambiente
 
 ```ts
 ConfigModule.forRoot({
@@ -190,17 +190,17 @@ ConfigModule.forRoot({
 });
 ```
 
-- Validate env at boot, not lazily at first request.
-- Keep config access behind typed helpers or config services.
-- Split dev/staging/prod concerns in config factories instead of branching throughout feature code.
+- Valide as variáveis de ambiente no boot, não de forma preguiçosa na primeira requisição.
+- Mantenha o acesso à configuração atrás de helpers tipados ou services de configuração.
+- Separe as particularidades de dev/staging/prod nas factories de configuração, em vez de espalhar condicionais pelo código das funcionalidades.
 
-## Persistence and Transactions
+## Persistência e Transações
 
-- Keep repository / ORM code behind providers that speak domain language.
-- For Prisma or TypeORM, isolate transactional workflows in services that own the unit of work.
-- Do not let controllers coordinate multi-step writes directly.
+- Mantenha o código de repositório / ORM atrás de providers que falam a linguagem do domínio.
+- Com Prisma ou TypeORM, isole fluxos transacionais em services que sejam donos da unidade de trabalho.
+- Não deixe controllers coordenarem escritas de várias etapas diretamente.
 
-## Testing
+## Testes
 
 ```ts
 describe('UsersController', () => {
@@ -218,14 +218,14 @@ describe('UsersController', () => {
 });
 ```
 
-- Unit test providers in isolation with mocked dependencies.
-- Add request-level tests for guards, validation pipes, and exception filters.
-- Reuse the same global pipes/filters in tests that you use in production.
+- Teste providers de forma isolada, com dependências mockadas.
+- Adicione testes no nível da requisição para guards, pipes de validação e exception filters.
+- Use nos testes os mesmos pipes/filters globais usados em produção.
 
-## Production Defaults
+## Padrões para Produção
 
-- Enable structured logging and request correlation ids.
-- Terminate on invalid env/config instead of booting partially.
-- Prefer async provider initialization for DB/cache clients with explicit health checks.
-- Keep background jobs and event consumers in their own modules, not inside HTTP controllers.
-- Make rate limiting, auth, and audit logging explicit for public endpoints.
+- Ative logs estruturados e IDs de correlação de requisição.
+- Encerre a aplicação se o ambiente/configuração for inválido, em vez de subir parcialmente.
+- Prefira inicialização assíncrona de providers para clientes de banco/cache, com health checks explícitos.
+- Mantenha jobs em background e consumidores de eventos em módulos próprios, não dentro de controllers HTTP.
+- Deixe explícitos rate limiting, autenticação e logs de auditoria em endpoints públicos.

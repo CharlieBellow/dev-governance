@@ -1,82 +1,82 @@
 ---
 name: react-testing
-description: React component testing with React Testing Library, Vitest/Jest, MSW for network mocking, accessibility assertions with axe, and the decision boundary between component tests and Playwright/Cypress end-to-end runs. Use when writing or fixing tests for React components, hooks, or pages.
+description: Testes de componentes React com React Testing Library, Vitest/Jest, MSW para mock de rede, asserções de acessibilidade com axe e o critério para decidir entre testes de componente e execuções end-to-end com Playwright/Cypress. Use ao escrever ou corrigir testes de componentes, hooks ou páginas React.
 metadata:
   origin: ECC
 ---
 
-# React Testing
+# Testes em React
 
-Comprehensive React testing patterns for behavior-focused component tests, custom hook tests, accessibility assertions, and network-level mocking.
+Padrões completos de testes em React para testes de componente focados em comportamento, testes de custom hooks, asserções de acessibilidade e mock no nível da rede.
 
-## When to Activate
+## Quando Ativar
 
-- Writing tests for React components, custom hooks, or pages
-- Adding test coverage to legacy untested components
-- Migrating from Enzyme or class-component-era patterns to React Testing Library
-- Setting up Vitest or Jest for a new React project
-- Mocking HTTP requests in tests
-- Asserting accessibility violations
-- Deciding which tests belong in RTL vs Playwright Component Testing vs full E2E
+- Ao escrever testes para componentes, custom hooks ou páginas React
+- Ao adicionar cobertura de testes a componentes legados sem testes
+- Ao migrar do Enzyme ou de padrões da era de class components para o React Testing Library
+- Ao configurar Vitest ou Jest em um novo projeto React
+- Ao mockar requisições HTTP nos testes
+- Ao verificar violações de acessibilidade
+- Ao decidir quais testes ficam no RTL, no Playwright Component Testing ou no E2E completo
 
-## Core Principle
+## Princípio Fundamental
 
-Test what the user sees and does, not implementation details.
+Teste o que o usuário vê e faz, não detalhes de implementação.
 
-A test should:
+Um teste deve:
 
-- Render the component with the same providers it has in production
-- Interact with it via accessible queries (role, label) and `userEvent`
-- Assert visible output and observable side effects (callback fired, request sent)
+- Renderizar o componente com os mesmos providers que ele tem em produção
+- Interagir com ele via queries acessíveis (role, label) e `userEvent`
+- Verificar a saída visível e os efeitos colaterais observáveis (callback chamado, requisição enviada)
 
-A test should NOT:
+Um teste NÃO deve:
 
-- Inspect component state, props passed to children, or which hooks were called
-- Mock React itself or framework hooks
-- Assert on the number of renders or DOM structure beyond what affects users
+- Inspecionar o estado do componente, as props passadas aos filhos ou quais hooks foram chamados
+- Mockar o próprio React ou hooks do framework
+- Verificar a quantidade de renders ou a estrutura do DOM além do que afeta o usuário
 
-## Library Choice
+## Escolha da Biblioteca
 
-| Runner | When | Note |
+| Runner | Quando | Observação |
 |---|---|---|
-| **Vitest** | Vite, Remix, modern setups | Faster, native ESM, Jest-compatible API |
-| **Jest** | Next.js, CRA, established repos | Default for many React projects |
-| **Playwright Component Testing** | Real browser engine needed | Use when JSDOM lacks the required feature |
-| **Cypress Component Testing** | Real browser, Cypress already in use | Alternative to Playwright CT |
+| **Vitest** | Vite, Remix, setups modernos | Mais rápido, ESM nativo, API compatível com Jest |
+| **Jest** | Next.js, CRA, repositórios estabelecidos | Padrão em muitos projetos React |
+| **Playwright Component Testing** | Precisa de engine de navegador real | Use quando o JSDOM não tem o recurso necessário |
+| **Cypress Component Testing** | Navegador real, Cypress já em uso | Alternativa ao Playwright CT |
 
-Pick one. Do not run RTL + Vitest AND Playwright CT in the same repo unless you have a clear lane separation.
+Escolha um. Não rode RTL + Vitest E Playwright CT no mesmo repositório, a menos que tenha uma separação clara de responsabilidades.
 
-## Query Priority
+## Prioridade das Queries
 
-React Testing Library exposes queries in three tiers — use top-down:
+O React Testing Library expõe queries em três níveis — use de cima para baixo:
 
-1. **Accessible to everyone**: `getByRole`, `getByLabelText`, `getByPlaceholderText`, `getByText`, `getByDisplayValue`
-2. **Semantic**: `getByAltText`, `getByTitle`
-3. **Test IDs (escape hatch)**: `getByTestId`
+1. **Acessíveis a todos**: `getByRole`, `getByLabelText`, `getByPlaceholderText`, `getByText`, `getByDisplayValue`
+2. **Semânticas**: `getByAltText`, `getByTitle`
+3. **Test IDs (saída de emergência)**: `getByTestId`
 
 ```tsx
-// Best
+// Melhor
 screen.getByRole("button", { name: /save/i });
 
-// OK for inputs
+// OK para inputs
 screen.getByLabelText("Email");
 
-// Last resort
+// Último recurso
 screen.getByTestId("save-btn");
 ```
 
-Variants:
+Variantes:
 
-- `getBy*` — throws if no match
-- `queryBy*` — returns `null` (use for "assert absence")
-- `findBy*` — async, returns a Promise (use for elements that appear after async work)
+- `getBy*` — lança erro se não encontrar
+- `queryBy*` — retorna `null` (use para "verificar ausência")
+- `findBy*` — assíncrona, retorna uma Promise (use para elementos que aparecem após trabalho assíncrono)
 
-## User Interaction with `userEvent`
+## Interação do Usuário com `userEvent`
 
 ```tsx
 import userEvent from "@testing-library/user-event";
 
-test("submits the form", async () => {
+test("envia o formulário", async () => {
   const user = userEvent.setup();
   const onSubmit = vi.fn();
   render(<UserForm onSubmit={onSubmit} />);
@@ -88,28 +88,28 @@ test("submits the form", async () => {
 });
 ```
 
-- Always `await` userEvent calls
-- Call `userEvent.setup()` once per test, reuse the returned `user`
-- `userEvent` simulates a real browser sequence; `fireEvent` dispatches a single synthetic event — prefer `userEvent`
+- Sempre use `await` nas chamadas do userEvent
+- Chame `userEvent.setup()` uma vez por teste e reutilize o `user` retornado
+- O `userEvent` simula uma sequência real do navegador; o `fireEvent` dispara um único evento sintético — prefira `userEvent`
 
-## Async Patterns
+## Padrões Assíncronos
 
 ```tsx
-// Element that appears after async work
+// Elemento que aparece após trabalho assíncrono
 expect(await screen.findByText("Loaded")).toBeInTheDocument();
 
-// Side effect assertion
+// Asserção de efeito colateral
 await waitFor(() => expect(saveSpy).toHaveBeenCalled());
 
-// Element that should disappear
+// Elemento que deve sumir
 await waitForElementToBeRemoved(() => screen.queryByText("Loading"));
 ```
 
-Never `setTimeout` + assertion — flaky. Use the matchers above.
+Nunca use `setTimeout` + asserção — fica instável. Use os matchers acima.
 
-## Network Mocking with MSW
+## Mock de Rede com MSW
 
-Mock Service Worker mocks at the network layer. The component, hooks, and fetch library all behave exactly as in production.
+O Mock Service Worker faz mock na camada de rede. O componente, os hooks e a biblioteca de fetch se comportam exatamente como em produção.
 
 ### Setup
 
@@ -135,12 +135,12 @@ afterEach(() => server.resetHandlers());
 afterAll(() => server.close());
 ```
 
-Configure `onUnhandledRequest: "error"` so any unmocked request fails the test loudly — silent passes are worse than red.
+Configure `onUnhandledRequest: "error"` para que qualquer requisição sem mock faça o teste falhar de forma visível — passar em silêncio é pior que ficar vermelho.
 
-### Per-test override
+### Sobrescrita por teste
 
 ```tsx
-test("renders error on 500", async () => {
+test("renderiza erro em caso de 500", async () => {
   server.use(
     http.get("/api/users/:id", () => new HttpResponse(null, { status: 500 })),
   );
@@ -149,9 +149,9 @@ test("renders error on 500", async () => {
 });
 ```
 
-## Provider Wrapping
+## Envolvendo com Providers
 
-Wrap providers once in a `test-utils.tsx`:
+Envolva os providers uma única vez em um `test-utils.tsx`:
 
 ```tsx
 // test-utils.tsx
@@ -179,14 +179,14 @@ export function renderWithProviders(
 export * from "@testing-library/react";
 ```
 
-Then `import { renderWithProviders, screen } from "test-utils"` in every test file.
+Depois, faça `import { renderWithProviders, screen } from "test-utils"` em todo arquivo de teste.
 
-## Custom Hook Testing
+## Testando Custom Hooks
 
 ```tsx
 import { renderHook, act } from "@testing-library/react";
 
-test("useCounter increments and decrements", () => {
+test("useCounter incrementa e decrementa", () => {
   const { result } = renderHook(() => useCounter(0));
 
   expect(result.current.count).toBe(0);
@@ -198,14 +198,14 @@ test("useCounter increments and decrements", () => {
   expect(result.current.count).toBe(0);
 });
 
-test("useCounter accepts initial value", () => {
+test("useCounter aceita valor inicial", () => {
   const { result } = renderHook(() => useCounter(10));
   expect(result.current.count).toBe(10);
 });
 
-test("useUser fetches user data", async () => {
-  // Instantiate QueryClient ONCE per test outside the wrapper so it survives re-renders.
-  // Creating it inside the wrapper closure resets cache state on every render, producing flaky tests.
+test("useUser busca os dados do usuário", async () => {
+  // Instancie o QueryClient UMA vez por teste, fora do wrapper, para que sobreviva aos re-renders.
+  // Criá-lo dentro da closure do wrapper reseta o cache a cada render e deixa os testes instáveis.
   const queryClient = new QueryClient({
     defaultOptions: { queries: { retry: false } },
   });
@@ -220,74 +220,74 @@ test("useUser fetches user data", async () => {
 });
 ```
 
-- Wrap state-changing calls in `act`
-- Test through the hook's public API only
-- For hooks that use context, pass a `wrapper`
+- Envolva chamadas que mudam estado em `act`
+- Teste apenas pela API pública do hook
+- Para hooks que usam context, passe um `wrapper`
 
-## Accessibility Assertions
+## Asserções de Acessibilidade
 
 ```tsx
-import { axe, toHaveNoViolations } from "jest-axe"; // or vitest-axe
+import { axe, toHaveNoViolations } from "jest-axe"; // ou vitest-axe
 expect.extend(toHaveNoViolations);
 
-test("UserCard has no a11y violations", async () => {
+test("UserCard não tem violações de a11y", async () => {
   const { container } = render(<UserCard user={mockUser} />);
   expect(await axe(container)).toHaveNoViolations();
 });
 ```
 
-Run axe in component tests for every interactive component. Catches:
+Rode o axe nos testes de todo componente interativo. Ele detecta:
 
-- Missing labels on form inputs
-- Invalid ARIA usage
-- Poor color contrast (limited — JSDOM has no real CSS engine, so this works for inline styles only; visual contrast belongs in Playwright)
-- Missing alt text on images
-- Heading order violations
+- Inputs de formulário sem label
+- Uso inválido de ARIA
+- Contraste de cor ruim (limitado — o JSDOM não tem engine de CSS real, então só funciona para estilos inline; contraste visual é assunto do Playwright)
+- Imagens sem texto alternativo
+- Violações na ordem dos headings
 
-Cross-link: [skills/accessibility/SKILL.md](../accessibility/SKILL.md) for the broader a11y testing playbook.
+Referência cruzada: [frontend-a11y](../frontend-a11y/SKILL.md) e a skill `accessibility` para o guia mais amplo de testes de a11y.
 
-## When NOT to Use Snapshot Tests
+## Quando NÃO Usar Testes de Snapshot
 
-Snapshots of rendered output:
+Snapshots da saída renderizada:
 
-- Break on every styling change
-- Get rubber-stamped during review
-- Test implementation detail (DOM structure), not behavior
+- Quebram a cada mudança de estilo
+- São aprovados sem olhar durante a revisão
+- Testam detalhe de implementação (estrutura do DOM), não comportamento
 
-Acceptable snapshot uses:
+Usos aceitáveis de snapshot:
 
-- Pure data serialization functions (`formatInvoice(invoice)` -> stable string)
-- Generated config files (e.g., webpack config output)
+- Funções puras de serialização de dados (`formatInvoice(invoice)` -> string estável)
+- Arquivos de configuração gerados (ex.: saída de config do webpack)
 
-For visual regression on components, use Playwright/Cypress screenshots or Percy/Chromatic — actual visual diffs, not DOM strings.
+Para regressão visual de componentes, use screenshots do Playwright/Cypress ou Percy/Chromatic — diffs visuais reais, não strings de DOM.
 
-## When to Reach for Playwright / Cypress
+## Quando Recorrer ao Playwright / Cypress
 
-JSDOM (used by Vitest/Jest) cannot:
+O JSDOM (usado pelo Vitest/Jest) não consegue:
 
-- Render real layout (flexbox, grid, viewport queries)
-- Run native browser animation, CSS transitions
-- Test scrolling behavior, drag-and-drop, paste from clipboard
-- Handle iframes, popups, downloads, cross-origin flows
-- Run real network in a controlled environment with full DevTools support
+- Renderizar layout real (flexbox, grid, queries de viewport)
+- Executar animações nativas do navegador e transições CSS
+- Testar comportamento de scroll, drag-and-drop, colar da área de transferência
+- Lidar com iframes, popups, downloads e fluxos cross-origin
+- Rodar rede real em ambiente controlado com suporte completo ao DevTools
 
-For any of those, use Playwright Component Testing (component test in real browser) or full E2E. See [e2e-testing skill](../e2e-testing/SKILL.md).
+Para qualquer um desses, use o Playwright Component Testing (teste de componente em navegador real) ou E2E completo. Veja a [skill e2e-testing](../../e2e-testing/SKILL.md).
 
-Decision boundary:
+Critério de decisão:
 
-- A hook, a presentational component, a form with logic -> RTL
-- A component whose layout matters or that uses browser APIs not in JSDOM -> Playwright CT
-- A full user flow across multiple pages -> Playwright/Cypress E2E
+- Um hook, um componente de apresentação, um formulário com lógica -> RTL
+- Um componente cujo layout importa ou que usa APIs do navegador ausentes no JSDOM -> Playwright CT
+- Um fluxo completo do usuário entre várias páginas -> E2E com Playwright/Cypress
 
-## Coverage Targets
+## Metas de Cobertura
 
-| Layer | Target |
+| Camada | Meta |
 |---|---|
-| Pure utilities | >=90% |
+| Utilitários puros | >=90% |
 | Custom hooks | >=85% |
-| Presentational components | >=80% — behavior, not lines |
-| Container components | >=70% — golden paths + error states |
-| Pages | E2E covered separately; smoke test minimum |
+| Componentes de apresentação | >=80% — comportamento, não linhas |
+| Componentes contêiner | >=70% — caminhos principais + estados de erro |
+| Páginas | Cobertas separadamente por E2E; no mínimo smoke test |
 
 Configure via `vitest.config.ts` / `jest.config.js`:
 
@@ -307,65 +307,65 @@ test: {
 }
 ```
 
-## Anti-Patterns
+## Antipadrões
 
-- `container.querySelector("...")` — bypasses accessibility queries, lets tests pass when real users would fail
-- Asserting on number of renders — implementation detail
-- `jest.mock("react", ...)` — never mock React. Refactor the component instead
-- Mocking child components by default — tests the integration, not isolation. Mock only when the child has heavy side effects
-- Ignoring `act()` warnings — they signal real bugs (state update after unmount, missing async wrapping)
-- Sharing mutable state across tests — flakes when test order changes
-- Tests that pass with `it.skip()` removed — your test does not actually assert what you think
+- `container.querySelector("...")` — contorna as queries de acessibilidade e deixa testes passarem quando usuários reais falhariam
+- Verificar a quantidade de renders — detalhe de implementação
+- `jest.mock("react", ...)` — nunca faça mock do React. Refatore o componente
+- Mockar componentes filhos por padrão — teste a integração, não o isolamento. Faça mock só quando o filho tiver efeitos colaterais pesados
+- Ignorar avisos de `act()` — eles sinalizam bugs reais (atualização de estado após desmontar, falta de tratamento assíncrono)
+- Compartilhar estado mutável entre testes — fica instável quando a ordem dos testes muda
+- Testes que passam mesmo removendo o `it.skip()` — seu teste não verifica de fato o que você pensa
 
-## TDD Workflow
+## Fluxo de TDD
 
 ```
-RED     -> Write failing test for the next requirement
-GREEN   -> Write minimal component code to pass
-REFACTOR -> Improve the component, tests stay green
-REPEAT  -> Next requirement
+RED      -> Escreva um teste que falha para o próximo requisito
+GREEN    -> Escreva o mínimo de código do componente para passar
+REFACTOR -> Melhore o componente, os testes continuam verdes
+REPEAT   -> Próximo requisito
 ```
 
-For new components:
+Para novos componentes:
 
-1. Define the component's prop type and signature
-2. Write the first test for the simplest case
-3. Verify it fails for the right reason
-4. Implement just enough to pass
-5. Add the next test case
-6. Refactor when the third similar test reveals a pattern
+1. Defina o tipo das props e a assinatura do componente
+2. Escreva o primeiro teste para o caso mais simples
+3. Verifique que ele falha pelo motivo certo
+4. Implemente apenas o suficiente para passar
+5. Adicione o próximo caso de teste
+6. Refatore quando o terceiro teste parecido revelar um padrão
 
-## Test Commands
+## Comandos de Teste
 
 ```bash
 # Vitest
-vitest                            # watch
-vitest run                        # one-shot
-vitest run --coverage             # with coverage
-vitest run path/to/file.test.tsx  # single file
+vitest                            # modo watch
+vitest run                        # execução única
+vitest run --coverage             # com cobertura
+vitest run path/to/file.test.tsx  # arquivo único
 
 # Jest
 jest --watch
 jest --coverage
 jest path/to/file.test.tsx
 
-# CI mode
+# Modo CI
 CI=true vitest run --coverage
 ```
 
-## Related
+## Relacionados
 
-- Rules: [rules/react/testing.md](../../rules/react/testing.md)
-- Skills: [react-patterns](../react-patterns/SKILL.md), [accessibility](../accessibility/SKILL.md), [e2e-testing](../e2e-testing/SKILL.md), [tdd-workflow](../tdd-workflow/SKILL.md)
-- Agents: `react-reviewer` (reviews test quality during code review), `tdd-guide` (enforces TDD process)
-- Commands: `/react-test`, `/react-review`
+- Regras: [rules/react/testing.md](../../rules/react/testing.md)
+- Skills: [react-patterns](../react-patterns/SKILL.md), `accessibility`, `e2e-testing`, `tdd-workflow`
+- Agentes: `react-reviewer` (revisa a qualidade dos testes durante o code review), `tdd-guide` (garante o processo de TDD)
+- Comandos: `/react-test`, `/react-review`
 
-## Examples
+## Exemplos
 
-### Form submission with MSW and userEvent
+### Envio de formulário com MSW e userEvent
 
 ```tsx
-test("submits user form and shows success", async () => {
+test("envia o formulário de usuário e mostra sucesso", async () => {
   server.use(
     http.post("/api/users", () =>
       HttpResponse.json({ id: "1", name: "Alice" }, { status: 201 }),
@@ -383,16 +383,16 @@ test("submits user form and shows success", async () => {
 });
 ```
 
-### Testing an error boundary
+### Testando um error boundary
 
 ```tsx
 function Broken() {
   throw new Error("boom");
 }
 
-test("error boundary renders fallback", () => {
-  // Suppress React's console.error noise for the expected throw, then restore so
-  // the spy does not leak across tests and hide real errors elsewhere.
+test("error boundary renderiza o fallback", () => {
+  // Silencia o console.error do React para o throw esperado e depois restaura, para que
+  // o spy não vaze entre testes e esconda erros reais em outros lugares.
   const errorSpy = vi.spyOn(console, "error").mockImplementation(() => {});
   try {
     render(
@@ -408,10 +408,10 @@ test("error boundary renders fallback", () => {
 });
 ```
 
-### Testing a Suspense boundary
+### Testando uma fronteira de Suspense
 
 ```tsx
-test("shows loading then content", async () => {
+test("mostra o loading e depois o conteúdo", async () => {
   renderWithProviders(
     <Suspense fallback={<div>Loading...</div>}>
       <UserDetail id="1" />

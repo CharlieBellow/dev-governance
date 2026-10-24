@@ -1,182 +1,182 @@
 ---
 name: agent-self-evaluation
-description: Use after completing any non-trivial task. The agent self-rates its output on 5 axes — accuracy, completeness, clarity, actionability, conciseness — with concrete evidence per criterion. Produces a structured 1-5 scorecard with specific improvement suggestions.
+description: Use após concluir qualquer tarefa não trivial. O agente avalia a própria saída em 5 eixos — precisão, completude, clareza, acionabilidade e concisão — com evidência concreta por critério. Produz um scorecard estruturado de 1 a 5 com sugestões específicas de melhoria.
 origin: ECC
 ---
 
-# Agent Self-Evaluation
+# Autoavaliação do Agente
 
-After completing a complex task, the agent pauses to rate its own output against a structured 5-axis rubric. This is NOT a pass/fail gate — it's a deliberate reflection step that catches omissions, flags overconfidence, and surface areas for improvement before the user has to.
+Depois de concluir uma tarefa complexa, o agente para e avalia a própria saída com uma rubrica estruturada de 5 eixos. Isto NÃO é um portão de aprovado/reprovado — é uma etapa deliberada de reflexão que pega omissões, sinaliza excesso de confiança e revela pontos de melhoria antes que o usuário precise apontá-los.
 
-## When to Activate
+## Quando Ativar
 
-- After writing code that spans 3+ files or 50+ lines
-- After completing a multi-step workflow (implement → test → review)
-- After a debugging session that involved 3+ attempts
-- After producing a design document, architecture decision, or written analysis
-- When the user asks "how good was that?" or "rate yourself"
-- At the end of any session Stop hook (if configured — see `references/hook-integration.md`)
+- Depois de escrever código que abrange 3+ arquivos ou 50+ linhas
+- Depois de concluir um fluxo de várias etapas (implementar → testar → revisar)
+- Depois de uma sessão de depuração que envolveu 3+ tentativas
+- Depois de produzir um documento de design, decisão de arquitetura ou análise escrita
+- Quando o usuário perguntar "quão bom foi isso?" ou "se avalie"
+- Ao final de qualquer sessão, via hook Stop (se configurado — veja `references/hook-integration.md`)
 
-## Core Concepts
+## Conceitos Fundamentais
 
-### The 5 Evaluation Axes
+### Os 5 Eixos de Avaliação
 
-| Axis | Question | What it catches |
+| Eixo | Pergunta | O que ele pega |
 |---|---|---|
-| **Accuracy** | Are the facts, claims, and outputs correct? | Hallucinations, wrong API names, incorrect syntax, false statements |
-| **Completeness** | Did it cover everything the user asked for? | Missed edge cases, unhandled error paths, forgotten requirements, skipped subtasks |
-| **Clarity** | Is the explanation understandable and well-structured? | Confusing explanations, jargon without definition, missing context, rambling |
-| **Actionability** | Can the user act on the output immediately? | Vague suggestions, missing steps, "you should X" without showing how, no verification path |
-| **Conciseness** | Did it use the minimum words/tokens needed? | Redundancy, over-explanation, repeating the user's question verbatim, filler content |
+| **Precisão** | Os fatos, afirmações e saídas estão corretos? | Alucinações, nomes de API errados, sintaxe incorreta, afirmações falsas |
+| **Completude** | Cobriu tudo o que o usuário pediu? | Casos de borda esquecidos, caminhos de erro sem tratamento, requisitos esquecidos, subtarefas puladas |
+| **Clareza** | A explicação é compreensível e bem estruturada? | Explicações confusas, jargão sem definição, falta de contexto, divagação |
+| **Acionabilidade** | O usuário consegue agir sobre a saída imediatamente? | Sugestões vagas, passos faltando, "você deveria X" sem mostrar como, sem caminho de verificação |
+| **Concisão** | Usou o mínimo de palavras/tokens necessário? | Redundância, explicação em excesso, repetir a pergunta do usuário literalmente, enchimento |
 
-### Scoring Scale
-
-```
-5 — Exceptional: no reasonable improvement possible
-4 — Good: minor nits only, no substantive gaps
-3 — Adequate: meets the request but has a notable weakness on at least one axis
-2 — Weak: has a clear gap that affects usability or correctness
-1 — Poor: fundamentally misses the request or contains significant errors
-```
-
-### The Evidence Rule
-
-Every score below 5 MUST cite specific evidence. A score of 3 cannot just say "could be better" — it must say exactly what is missing or wrong. The mantra: **"Show the gap, don't just name it."**
-
-## Workflow
-
-### Step 1: Collect the Raw Material
-
-Gather what you'll evaluate:
+### Escala de Pontuação
 
 ```
-- The original user request (read back from conversation)
-- Your final response/output (the deliverable)
-- Any tool outputs that verify correctness (test results, exit codes, lint output)
-- Any user feedback received during the task (corrections, "try again", "that's not right")
+5 — Excepcional: nenhuma melhoria razoável é possível
+4 — Bom: apenas detalhes menores, sem lacunas substanciais
+3 — Adequado: atende ao pedido, mas tem uma fraqueza notável em pelo menos um eixo
+2 — Fraco: tem uma lacuna clara que afeta a usabilidade ou a correção
+1 — Ruim: erra fundamentalmente o pedido ou contém erros significativos
 ```
 
-### Step 2: Score Each Axis Independently
+### A Regra da Evidência
 
-Work through the 5 axes one at a time. For each:
+Toda nota abaixo de 5 DEVE citar evidência específica. Uma nota 3 não pode dizer apenas "poderia ser melhor" — ela precisa dizer exatamente o que está faltando ou errado. O mantra: **"Mostre a lacuna, não apenas a nomeie."**
 
-1. Read the axis question
-2. Find evidence (or lack of evidence) in the output
-3. Assign a score 1-5
-4. If score < 5, write a one-sentence improvement note citing the gap
+## Fluxo de Trabalho
 
-Do NOT average the scores in your head first and then work backwards. Score each axis fresh.
+### Passo 1: Reunir o Material
 
-### Step 3: Produce the Evaluation Report
-
-Use the template from `templates/evaluation-report.md`. The report must include:
+Junte o que será avaliado:
 
 ```
-- One-line summary
-- 5-axis scorecard (score + evidence per axis)
-- Overall score (simple average, rounded to 1 decimal)
-- 1-3 specific improvements ranked by impact
-- Self-check: "Would the user agree with this assessment?"
+- O pedido original do usuário (releia na conversa)
+- Sua resposta/saída final (a entrega)
+- Quaisquer saídas de ferramentas que comprovem a correção (resultados de testes, códigos de saída, saída do lint)
+- Qualquer feedback do usuário recebido durante a tarefa (correções, "tente de novo", "não é isso")
 ```
 
-### Step 4: Apply the Improvement
+### Passo 2: Pontuar Cada Eixo de Forma Independente
 
-If any axis scored 3 or below:
+Passe pelos 5 eixos, um de cada vez. Para cada um:
 
-1. State what you would do differently
-2. If the gap is fixable in < 30 seconds (missing link, unclear phrasing), fix it now
-3. If the gap requires rework, flag it explicitly: "This axis scored [reason] because [evidence]. Re-running with [specific fix] would likely raise it to [score]."
+1. Leia a pergunta do eixo
+2. Encontre evidência (ou a falta dela) na saída
+3. Atribua uma nota de 1 a 5
+4. Se a nota for < 5, escreva uma nota de melhoria de uma frase citando a lacuna
 
-## Code Examples
+NÃO faça primeiro uma média de cabeça para depois justificar de trás para frente. Pontue cada eixo do zero.
 
-### Example: Good Evaluation (Score 4+)
+### Passo 3: Produzir o Relatório de Avaliação
+
+Use o template de `templates/evaluation-report.md`. O relatório deve incluir:
 
 ```
-Task: Add retry logic to HTTP client
+- Resumo de uma linha
+- Scorecard dos 5 eixos (nota + evidência por eixo)
+- Nota geral (média simples, arredondada para 1 casa decimal)
+- 1 a 3 melhorias específicas, ordenadas por impacto
+- Autoverificação: "O usuário concordaria com esta avaliação?"
+```
+
+### Passo 4: Aplicar a Melhoria
+
+Se algum eixo tiver nota 3 ou menor:
+
+1. Diga o que você faria diferente
+2. Se a lacuna puder ser corrigida em < 30 segundos (link faltando, frase confusa), corrija agora
+3. Se a lacuna exigir retrabalho, sinalize explicitamente: "Este eixo teve nota [motivo] por causa de [evidência]. Refazer com [correção específica] provavelmente elevaria para [nota]."
+
+## Exemplos
+
+### Exemplo: Boa Avaliação (Nota 4+)
+
+```
+Tarefa: Adicionar lógica de retry ao cliente HTTP
 
 Scorecard:
-  Accuracy:    5 — All API calls correct. Verified: retries use
-                  exponential backoff. No hallucinated methods.
-  Completeness: 4 — Covered happy path + 3 error cases. Missing:
-                  timeout handling for hung connections.
-  Clarity:      5 — Code comments explain backoff formula.
-                  PR description links to incident that motivated this.
-  Actionability:5 — Single merge. No follow-up tasks. Tests pass.
-  Conciseness:  4 — 47 lines total. The retry loop could be extracted
-                  into a helper to drop ~8 lines.
+  Precisão:       5 — Todas as chamadas de API corretas. Verificado: os retries
+                     usam backoff exponencial. Nenhum método alucinado.
+  Completude:     4 — Cobriu o caminho feliz + 3 casos de erro. Faltando:
+                     tratamento de timeout para conexões travadas.
+  Clareza:        5 — Comentários no código explicam a fórmula do backoff.
+                     A descrição da PR aponta o incidente que motivou a mudança.
+  Acionabilidade: 5 — Um único merge. Sem tarefas pendentes. Testes passam.
+  Concisão:       4 — 47 linhas no total. O loop de retry poderia ser extraído
+                     para um helper, eliminando ~8 linhas.
 
-Overall: 4.6 — One gap (timeout handling). Fix before merging.
+Geral: 4.6 — Uma lacuna (tratamento de timeout). Corrigir antes do merge.
 ```
 
-### Example: Weak Evaluation (Score 2-3)
+### Exemplo: Avaliação Fraca (Nota 2-3)
 
 ```
-Task: Add retry logic to HTTP client
+Tarefa: Adicionar lógica de retry ao cliente HTTP
 
 Scorecard:
-  Accuracy:    2 — Used urllib3 which doesn't match our
-                  httpx-based codebase. Wrong library.
-  Completeness: 3 — Works for GET. POST/PUT not handled (user
-                  said "all HTTP requests").
-  Clarity:      4 — Code is readable. Good variable names.
-  Actionability:2 — "Add tests" mentioned but no test file created.
-                  User has to write tests before merging.
-  Conciseness:  3 — 120 lines. The retry config is duplicated in
-                  3 places instead of one shared RetryConfig object.
+  Precisão:       2 — Usou urllib3, que não combina com nossa base
+                     baseada em httpx. Biblioteca errada.
+  Completude:     3 — Funciona para GET. POST/PUT não tratados (o usuário
+                     disse "todas as requisições HTTP").
+  Clareza:        4 — Código legível. Bons nomes de variáveis.
+  Acionabilidade: 2 — "Adicionar testes" foi mencionado, mas nenhum arquivo de
+                     teste foi criado. O usuário precisa escrever os testes antes do merge.
+  Concisão:       3 — 120 linhas. A configuração de retry está duplicada em
+                     3 lugares em vez de um único objeto RetryConfig compartilhado.
 
-Overall: 2.8 — Wrong library used. Needs httpx rewrite.
-  Fix accuracy first (switch to httpx), then extend to all
-  HTTP methods, then consolidate config.
+Geral: 2.8 — Biblioteca errada. Precisa reescrever com httpx.
+  Corrija a precisão primeiro (trocar para httpx), depois estenda para todos
+  os métodos HTTP e então consolide a configuração.
 ```
 
-## Anti-Patterns
+## Antipadrões
 
-### "Everything is a 5"
-
-```
-FAIL: Accuracy:    5 — All good.
-   Completeness: 5 — Everything covered.
-   Clarity:      5 — Clear.
-```
-
-No evidence cited. This is self-congratulation, not evaluation. A real 5 requires proving there's nothing to improve.
-
-### Over-penalizing for scope creep
+### "Tudo é 5"
 
 ```
-FAIL: Completeness: 2 — Didn't handle WebSocket connections or
-   gRPC streaming (user didn't ask for these)
+FALHA: Precisão:   5 — Tudo certo.
+       Completude: 5 — Tudo coberto.
+       Clareza:    5 — Claro.
 ```
 
-Only evaluate against what the user actually requested, not what you could have additionally built.
+Nenhuma evidência citada. Isso é autoelogio, não avaliação. Um 5 de verdade exige provar que não há nada a melhorar.
 
-### Using the evaluation to re-litigate
-
-```
-FAIL: "As I said earlier, this approach is wrong. Score: 1"
-```
-
-The evaluation is about the delivered output, not about re-arguing design decisions that were already made. If the approach was wrong, that should have been caught before delivery.
-
-### Mixing personal preference with objective gaps
+### Penalizar demais por escopo extra
 
 ```
-FAIL: "Score: 3. I don't like Python decorators."
+FALHA: Completude: 2 — Não tratou conexões WebSocket nem
+       streaming gRPC (o usuário não pediu isso)
 ```
 
-"Don't like" is not evidence. Cite a concrete readability, testability, or correctness concern, or leave the score at 4+.
+Avalie apenas em relação ao que o usuário realmente pediu, não ao que você poderia ter construído a mais.
 
-## Best Practices
+### Usar a avaliação para reabrir discussões
 
-- **Evaluate the output, not the process.** The user cares about what you delivered, not how many iterations you took.
-- **One improvement per weak axis.** Don't list 5 things for one axis — pick the highest-impact gap.
-- **Tie improvements to user impact.** "Missing error handling means the user's API call will crash silently" beats "add error handling."
-- **Be specific about what 'fixed' looks like.** "Re-run with httpx transport configured for retries" beats "fix the library issue."
-- **Use tool outputs as evidence.** If tests passed, cite them. If lint is clean, cite it. Don't guess — grep for the proof.
-- **If you can't find any gaps, try harder.** A perfect score across all 5 axes is rare. Ask: "If I were the user, what would annoy me about this output?"
+```
+FALHA: "Como eu disse antes, essa abordagem está errada. Nota: 1"
+```
 
-## Related Skills
+A avaliação é sobre a saída entregue, não sobre rediscutir decisões de design já tomadas. Se a abordagem estava errada, isso deveria ter sido pego antes da entrega.
 
-- `agent-eval` — Head-to-head comparison of different coding agents on benchmark tasks
-- `verification-loop` — Systematic verification of outputs against expected results
-- `security-review` — Security-focused code review checklist
+### Misturar preferência pessoal com lacunas objetivas
+
+```
+FALHA: "Nota: 3. Não gosto de decorators em Python."
+```
+
+"Não gosto" não é evidência. Cite uma preocupação concreta de legibilidade, testabilidade ou correção, ou mantenha a nota em 4+.
+
+## Boas Práticas
+
+- **Avalie a saída, não o processo.** O usuário se importa com o que você entregou, não com quantas iterações levou.
+- **Uma melhoria por eixo fraco.** Não liste 5 coisas para um eixo — escolha a lacuna de maior impacto.
+- **Ligue as melhorias ao impacto no usuário.** "A falta de tratamento de erro faz a chamada de API do usuário falhar silenciosamente" é melhor que "adicionar tratamento de erro".
+- **Seja específico sobre como fica o 'corrigido'.** "Refazer com o transport do httpx configurado para retries" é melhor que "corrigir o problema da biblioteca".
+- **Use as saídas das ferramentas como evidência.** Se os testes passaram, cite-os. Se o lint está limpo, cite. Não chute — procure a prova.
+- **Se não encontrar nenhuma lacuna, procure mais.** Nota máxima nos 5 eixos é rara. Pergunte: "Se eu fosse o usuário, o que me incomodaria nesta saída?"
+
+## Skills Relacionadas
+
+- `agent-eval` — Comparação direta entre diferentes agentes de código em tarefas de benchmark
+- `verification-loop` — Verificação sistemática das saídas contra os resultados esperados
+- `dg-security-review` — Checklist de revisão de código focada em segurança

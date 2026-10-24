@@ -11,7 +11,7 @@
       - `frontend-skills/`        # react-patterns, nextjs-turbopack, react-testing, frontend-a11y, react-performance
       - `tdd-workflow/`          # Fluxo de Test-Driven Development (TDD)
       - `e2e-testing/`           # Testes automatizados E2E com Playwright
-      - `security-review/`       # Checklist e auditoria de segurança
+      - `dg-security-review/`    # Checklist e auditoria de segurança
       - `docker-patterns/`       # Conteinerização e Docker Compose
       - `api-design/`            # Design de endpoints REST e padronização
       - `error-handling/`        # Tratamento defensivo de erros e exceções

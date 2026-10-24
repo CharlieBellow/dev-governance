@@ -1,3 +1,8 @@
+---
+name: create-pr
+description: "Gera o texto de Pull Request a partir da task em .agents/project/project-tasks/ e do log de progresso em .agents/project/docs/progress/. Use quando o usuário pedir o texto/descrição da PR de uma task específica."
+---
+
 # Skill: Gerar Texto de Pull Request (Smart PR)
 
 ## Descrição

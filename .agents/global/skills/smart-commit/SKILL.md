@@ -1,4 +1,9 @@
-# Skill: Smart Conventional Commit & PR Generator
+---
+name: smart-commit
+description: "Analisa git status/diff e gera mensagem de commit no padrão Conventional Commits mais o corpo da Pull Request no template do projeto. Use quando o usuário pedir mensagem de commit, commit inteligente ou texto de PR das alterações atuais."
+---
+
+# Skill: Gerador de Commit Convencional e PR
 
 ## Descrição
 Analisa as alterações recentes no repositório (via `git status` / `git diff`), interpreta o contexto da última conversa ou do diário de progresso, e gera automaticamente uma mensagem de commit seguindo o padrão **Conventional Commits** e um template estruturado para Pull Request.

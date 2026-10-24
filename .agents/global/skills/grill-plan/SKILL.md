@@ -1,3 +1,8 @@
+---
+name: grill-plan
+description: "Entrevista arquitetural interativa antes de codar: faz rodadas de perguntas numeradas com resposta recomendada sobre domínio (DDD), Clean Architecture, Zod, exceções de domínio e testes Vitest. Use ao planejar uma nova feature ou alteração, quando o usuário pedir para ser questionado/\"grill me\" ou antes de escrever código de implementação."
+---
+
 # Skill: Planejamento por Entrevista (Entrevista Arquitetural Interativa)
 
 ## Propósito

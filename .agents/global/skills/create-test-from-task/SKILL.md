@@ -1,4 +1,9 @@
-# Skill: Create Test From Task
+---
+name: create-test-from-task
+description: "Gera testes automatizados (unitários, de componente ou integração leve com Vitest + RTL) a partir de uma task, cobrindo caminho feliz, fronteiras, entradas malformadas, round-trip e casos esquisitos. Use quando o usuário pedir testes para uma task ou funcionalidade."
+---
+
+# Skill: Criar Testes a partir da Task
 
 ## 🎯 Objetivo
 Gerar arquivos de teste automatizados (unitários, de componente ou de integração leve) baseados estritamente na task fornecida, aplicando as melhores práticas de engenharia de software, Clean Architecture, DDD e as regras do harness do projeto.
@@ -57,7 +62,7 @@ describe("[NomeDoModulo / Componente / Funcao]", () => {
   })
 
   describe("3. Comportamentos Específicos da Task", () => {
-    it("deve cobrir o requisito existo descrito na spec/task", () => {
+    it("deve cobrir o requisito exato descrito na spec/task", () => {
       // ...
     })
   })

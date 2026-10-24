@@ -1,37 +1,37 @@
 ---
 name: react-patterns
-description: React 18/19 patterns including hooks discipline, server/client component boundaries, Suspense + error boundaries, form actions, data fetching, state management decision trees, and accessibility-first composition. Use when writing or reviewing React components.
+description: Padrões de React 18/19, incluindo disciplina de hooks, fronteiras entre server/client components, Suspense + error boundaries, form actions, busca de dados, árvores de decisão para gerenciamento de estado e composição com acessibilidade em primeiro lugar. Use ao escrever ou revisar componentes React.
 metadata:
   origin: ECC
 ---
 
-# React Patterns
+# Padrões React
 
-Idiomatic React 18/19 patterns for building robust, accessible, performant component trees.
+Padrões idiomáticos de React 18/19 para construir árvores de componentes robustas, acessíveis e performáticas.
 
-## When to Activate
+## Quando Ativar
 
-- Writing or modifying React function components, custom hooks, or component trees
-- Reviewing JSX/TSX files
-- Designing state shape or component composition
-- Migrating class components or older `forwardRef`/`useEffect`-heavy code
-- Choosing between local state, lifted state, context, and external stores
-- Working with Server Components / Client Components (Next.js App Router, RSC)
-- Implementing forms with React 19 actions or controlled inputs
-- Wiring data fetching with TanStack Query / SWR / RSC
+- Ao escrever ou modificar function components, custom hooks ou árvores de componentes React
+- Ao revisar arquivos JSX/TSX
+- Ao projetar o formato do estado ou a composição de componentes
+- Ao migrar class components ou código antigo com muito `forwardRef`/`useEffect`
+- Ao escolher entre estado local, estado elevado, context e stores externas
+- Ao trabalhar com Server Components / Client Components (Next.js App Router, RSC)
+- Ao implementar formulários com actions do React 19 ou inputs controlados
+- Ao conectar busca de dados com TanStack Query / SWR / RSC
 
-## Core Principles
+## Princípios Fundamentais
 
-### 1. Render is a Pure Function of Props and State
+### 1. O Render é uma Função Pura de Props e Estado
 
 ```tsx
-// Good: derive during render
+// Bom: derivar durante o render
 function Cart({ items }: { items: CartItem[] }) {
   const total = items.reduce((sum, i) => sum + i.price * i.qty, 0);
   return <span>{formatMoney(total)}</span>;
 }
 
-// Bad: derived state stored separately
+// Ruim: estado derivado guardado separadamente
 function Cart({ items }: { items: CartItem[] }) {
   const [total, setTotal] = useState(0);
   useEffect(() => {
@@ -41,58 +41,58 @@ function Cart({ items }: { items: CartItem[] }) {
 }
 ```
 
-Derived state in `useEffect` adds a render cycle, can desync, and obscures the data flow.
+Estado derivado em `useEffect` adiciona um ciclo de render, pode dessincronizar e esconde o fluxo de dados.
 
-### 2. Side Effects Outside Render
+### 2. Efeitos Colaterais Fora do Render
 
-Effects, mutations, network calls, and subscriptions live in event handlers or `useEffect` — never in the render body.
+Efeitos, mutações, chamadas de rede e assinaturas ficam em event handlers ou em `useEffect` — nunca no corpo do render.
 
-### 3. Composition Over Inheritance
+### 3. Composição em vez de Herança
 
-React has no inheritance model for components. Compose with `children`, render props, or component props.
+O React não tem modelo de herança para componentes. Componha com `children`, render props ou props de componente.
 
-## Hooks Discipline
+## Disciplina de Hooks
 
-See [rules/react/hooks.md](../../rules/react/hooks.md) for the full ruleset. Highlights:
+Veja [rules/react/hooks.md](../../rules/react/hooks.md) para o conjunto completo de regras. Destaques:
 
-- Top-level only, never conditional
-- Cleanup every subscription, interval, listener
-- Functional updater (`setX(prev => prev + 1)`) when new state depends on old
-- Default position: do not memoize — add `useMemo`/`useCallback` only when a profiler or a dependency chain proves it matters
-- Extract a custom hook only when the same hook sequence appears in 2+ components
+- Apenas no nível superior, nunca condicionais
+- Faça cleanup de toda assinatura, interval e listener
+- Use updater funcional (`setX(prev => prev + 1)`) quando o novo estado depende do anterior
+- Posição padrão: não memoize — adicione `useMemo`/`useCallback` só quando um profiler ou uma cadeia de dependências provar que importa
+- Extraia um custom hook só quando a mesma sequência de hooks aparecer em 2+ componentes
 
-## State Location Decision Tree
+## Árvore de Decisão: Onde Fica o Estado
 
 ```
-Used by one component?
-  -> useState inside it
+Usado por um componente?
+  -> useState dentro dele
 
-Used by parent + a few descendants?
-  -> lift to nearest common ancestor
+Usado pelo pai + alguns descendentes?
+  -> elevar para o ancestral comum mais próximo
 
-Used across distant branches AND low-frequency reads (theme, auth, locale)?
+Usado em ramos distantes E com leituras de baixa frequência (tema, auth, idioma)?
   -> React Context
 
-High-frequency updates shared across the tree?
-  -> external store (Zustand, Jotai, Redux Toolkit)
+Atualizações de alta frequência compartilhadas pela árvore?
+  -> store externa (Zustand, Jotai, Redux Toolkit)
 
-Derived from a server?
-  -> server-state library (TanStack Query, SWR, RSC fetch)
+Vem de um servidor?
+  -> biblioteca de estado do servidor (TanStack Query, SWR, fetch em RSC)
 ```
 
-Most pages do not need context or a global store. Resist abstraction until duplicated lifting becomes painful.
+A maioria das páginas não precisa de context nem de store global. Resista à abstração até que elevar estado repetidamente se torne doloroso.
 
 ## Server / Client Components (RSC)
 
 ```tsx
-// Server Component - default, async, never ships JS for itself
+// Server Component - padrão, assíncrono, nunca envia JS próprio ao cliente
 export default async function ProductPage({ params }: { params: { id: string } }) {
   const product = await db.product.findUnique({ where: { id: params.id } });
   if (!product) notFound();
   return <ProductView product={product} />;
 }
 
-// Client Component - opt in with "use client"
+// Client Component - opte com "use client"
 "use client";
 export function AddToCartButton({ productId }: { productId: string }) {
   const [pending, startTransition] = useTransition();
@@ -101,17 +101,17 @@ export function AddToCartButton({ productId }: { productId: string }) {
       disabled={pending}
       onClick={() => startTransition(() => addToCart(productId))}
     >
-      {pending ? "Adding..." : "Add to cart"}
+      {pending ? "Adicionando..." : "Adicionar ao carrinho"}
     </button>
   );
 }
 ```
 
-Boundaries:
+Fronteiras:
 
-- Server -> Client: pass serializable props or `children`
-- Client -> Server: invoke Server Actions via `<form action={...}>` or imperatively from event handlers
-- Never `import` a Server Component from a Client Component file — compose them via `children` instead
+- Server -> Client: passe props serializáveis ou `children`
+- Client -> Server: chame Server Actions via `<form action={...}>` ou de forma imperativa a partir de event handlers
+- Nunca faça `import` de um Server Component em um arquivo de Client Component — componha-os via `children`
 
 ## Suspense + Error Boundaries
 
@@ -123,13 +123,13 @@ Boundaries:
 </ErrorBoundary>
 ```
 
-- Place Suspense boundaries close to the data, not at the route root — progressively reveal content
-- Error Boundary remains a class API; use `react-error-boundary` for a hook-friendly wrapper
-- A boundary catches errors thrown during render, lifecycle, and constructors of its children — NOT in event handlers or async code
+- Coloque as fronteiras de Suspense perto dos dados, não na raiz da rota — revele o conteúdo progressivamente
+- Error Boundary continua sendo uma API de classe; use `react-error-boundary` para um wrapper amigável a hooks
+- Uma fronteira captura erros lançados durante o render, o ciclo de vida e os construtores dos filhos — NÃO em event handlers ou código assíncrono
 
-## Forms
+## Formulários
 
-### React 19 form actions (preferred for new code)
+### Form actions do React 19 (preferido em código novo)
 
 ```tsx
 "use client";
@@ -140,7 +140,7 @@ const initial = { error: null as string | null };
 async function updateUserAction(_prev: typeof initial, formData: FormData) {
   "use server";
   const parsed = UserSchema.safeParse(Object.fromEntries(formData));
-  if (!parsed.success) return { error: "Invalid input" };
+  if (!parsed.success) return { error: "Entrada inválida" };
   await db.user.update({ where: { id: parsed.data.id }, data: parsed.data });
   return { error: null };
 }
@@ -150,34 +150,34 @@ export function UserForm() {
   return (
     <form action={formAction}>
       <input name="name" required />
-      <button type="submit" disabled={pending}>Save</button>
+      <button type="submit" disabled={pending}>Salvar</button>
       {state.error && <p role="alert">{state.error}</p>}
     </form>
   );
 }
 ```
 
-### Controlled inputs
+### Inputs controlados
 
-Use controlled when the value drives other UI, formats on every keystroke, or implements real-time validation.
+Use controlados quando o valor alimenta outra parte da UI, é formatado a cada tecla ou implementa validação em tempo real.
 
-### Complex forms
+### Formulários complexos
 
-For multi-step forms, dynamic field arrays, or cross-field validation: use a library (React Hook Form, TanStack Form). Roll-your-own state management for forms past trivial complexity is a maintenance trap.
+Para formulários de várias etapas, arrays dinâmicos de campos ou validação entre campos: use uma biblioteca (React Hook Form, TanStack Form). Gerenciar o estado de formulários na mão além da complexidade trivial é uma armadilha de manutenção.
 
-## Data Fetching Decision Matrix
+## Matriz de Decisão para Busca de Dados
 
-| Need | Tool |
+| Necessidade | Ferramenta |
 |---|---|
-| Per-request data in Next.js App Router | RSC `await fetch()` |
-| Client-side cache + mutations + invalidation | TanStack Query |
-| Lightweight client cache + revalidation | SWR |
-| Real-time subscriptions | Server-Sent Events, WebSockets, or the lib's subscription API |
-| One-off fire-and-forget | `fetch()` in an event handler |
+| Dados por requisição no Next.js App Router | `await fetch()` em RSC |
+| Cache no cliente + mutações + invalidação | TanStack Query |
+| Cache leve no cliente + revalidação | SWR |
+| Assinaturas em tempo real | Server-Sent Events, WebSockets ou a API de assinatura da biblioteca |
+| Disparo único sem esperar retorno | `fetch()` em um event handler |
 
-Avoid `useEffect` + `fetch` for application data — race conditions, no cache, no retry, no Suspense integration.
+Evite `useEffect` + `fetch` para dados da aplicação — condições de corrida, sem cache, sem retry, sem integração com Suspense.
 
-## Composition Recipes
+## Receitas de Composição
 
 ### Slot via `children`
 
@@ -188,7 +188,7 @@ Avoid `useEffect` + `fetch` for application data — race conditions, no cache, 
 </Layout>
 ```
 
-### Named slots
+### Slots nomeados
 
 ```tsx
 <Page header={<Nav />} sidebar={<Filters />}>
@@ -196,13 +196,13 @@ Avoid `useEffect` + `fetch` for application data — race conditions, no cache, 
 </Page>
 ```
 
-### Compound components (shared state via Context)
+### Compound components (estado compartilhado via Context)
 
 ```tsx
 <Tabs defaultValue="profile">
   <Tabs.List>
-    <Tabs.Trigger value="profile">Profile</Tabs.Trigger>
-    <Tabs.Trigger value="settings">Settings</Tabs.Trigger>
+    <Tabs.Trigger value="profile">Perfil</Tabs.Trigger>
+    <Tabs.Trigger value="settings">Configurações</Tabs.Trigger>
   </Tabs.List>
   <Tabs.Panel value="profile"><Profile /></Tabs.Panel>
   <Tabs.Panel value="settings"><Settings /></Tabs.Panel>
@@ -211,7 +211,7 @@ Avoid `useEffect` + `fetch` for application data — race conditions, no cache, 
 
 ### Render prop / function-as-child
 
-Useful when the parent needs to pass parameters to the rendered output:
+Útil quando o pai precisa passar parâmetros para a saída renderizada:
 
 ```tsx
 <DataLoader id={id}>
@@ -219,60 +219,60 @@ Useful when the parent needs to pass parameters to the rendered output:
 </DataLoader>
 ```
 
-Modern alternative: a hook (`useData(id)`) returning the same shape — usually cleaner.
+Alternativa moderna: um hook (`useData(id)`) que retorna o mesmo formato — geralmente mais limpo.
 
 ## Performance
 
-### When `React.memo` Actually Helps
+### Quando o `React.memo` Realmente Ajuda
 
-Wrap a component in `React.memo` only when:
+Envolva um componente em `React.memo` apenas quando:
 
-1. It re-renders frequently
-2. Its props are usually the same between renders
-3. Its render is measurably expensive
+1. Ele re-renderiza com frequência
+2. Suas props costumam ser as mesmas entre renders
+3. Seu render é mensuravelmente caro
 
-`React.memo` adds an equality check on every render. If props differ on most renders, the check is pure overhead.
+`React.memo` adiciona uma checagem de igualdade a cada render. Se as props mudam na maioria dos renders, a checagem é puro custo.
 
-### Avoiding Render Cascades
+### Evitando Cascatas de Render
 
-- Lift state down rather than up where possible
-- Split context: one context per concern, so a change to `themeContext` does not re-render auth consumers
-- Use `useSyncExternalStore` for external state libraries — required for safe concurrent rendering
+- Desça o estado em vez de subir, sempre que possível
+- Divida o context: um context por responsabilidade, para que uma mudança em `themeContext` não re-renderize os consumidores de auth
+- Use `useSyncExternalStore` para bibliotecas de estado externo — obrigatório para render concorrente seguro
 
-### Lists
+### Listas
 
-- Provide stable `key` props (database id, not array index)
-- Virtualize long lists with `@tanstack/react-virtual` or `react-window` once visible item count exceeds ~50 with non-trivial rows
+- Forneça props `key` estáveis (id do banco, não o índice do array)
+- Virtualize listas longas com `@tanstack/react-virtual` ou `react-window` quando a quantidade de itens visíveis passar de ~50 com linhas não triviais
 
-## Accessibility-First Composition
+## Composição com Acessibilidade em Primeiro Lugar
 
-- Always render semantic HTML (`<button>`, `<a>`, `<nav>`, `<main>`) before reaching for `role` attributes
-- Every interactive element must be reachable by keyboard
-- Form inputs need labels — `<label htmlFor>` or `aria-label` if visually labeled by an icon
-- Manage focus on route changes and modal open/close
-- Run `axe` in component tests (see [skills/react-testing](../react-testing/SKILL.md))
-- Cross-link: [skills/accessibility/SKILL.md](../accessibility/SKILL.md) covers WCAG criteria and pattern libraries
+- Sempre renderize HTML semântico (`<button>`, `<a>`, `<nav>`, `<main>`) antes de recorrer a atributos `role`
+- Todo elemento interativo precisa ser alcançável pelo teclado
+- Inputs de formulário precisam de label — `<label htmlFor>` ou `aria-label` se o rótulo visual for um ícone
+- Gerencie o foco em mudanças de rota e na abertura/fechamento de modais
+- Rode `axe` nos testes de componente (veja [skills/react-testing](../react-testing/SKILL.md))
+- Referência cruzada: [frontend-a11y](../frontend-a11y/SKILL.md) e a skill `accessibility` cobrem os critérios da WCAG e bibliotecas de padrões
 
-## Routing
+## Roteamento
 
-This skill is router-agnostic. The patterns above work with React Router, TanStack Router, Next.js App Router, Remix Router. Router-specific patterns (loaders, actions, nested layouts) follow the router's documentation — those are framework concerns layered on top of React core.
+Esta skill não depende de roteador. Os padrões acima funcionam com React Router, TanStack Router, Next.js App Router e Remix Router. Padrões específicos de cada roteador (loaders, actions, layouts aninhados) seguem a documentação do roteador — são responsabilidades do framework sobre o núcleo do React.
 
-## Out of Scope (Pointer Sections)
+## Fora do Escopo (Seções de Referência)
 
-- **Next.js specifics**: App Router data loading, Route Handlers, Middleware, Parallel Routes — separate concern, use Next.js docs
-- **React Native**: Platform-specific patterns differ enough to warrant a separate `react-native-patterns` skill (not present yet)
-- **Remix**: Loader/action conventions overlap with RSC but follow Remix docs
+- **Especificidades do Next.js**: carregamento de dados no App Router, Route Handlers, Middleware, Parallel Routes — assunto separado, use a documentação do Next.js
+- **React Native**: os padrões específicos de plataforma diferem o bastante para justificar uma skill `react-native-patterns` separada (ainda não existe)
+- **Remix**: as convenções de loader/action se sobrepõem às de RSC, mas seguem a documentação do Remix
 
-## Related
+## Relacionados
 
-- Rules: [rules/react/](../../rules/react/) — coding-style, hooks, patterns, security, testing
-- Skills: [react-performance](../react-performance/SKILL.md) for the Vercel-derived performance ruleset, [frontend-patterns](../frontend-patterns/SKILL.md) for cross-framework UI concerns, [accessibility](../accessibility/SKILL.md), [angular-developer](../angular-developer/SKILL.md) for framework comparison
-- Agents: `react-reviewer` for code review, `react-build-resolver` for build/bundler errors
-- Commands: `/react-review`, `/react-build`, `/react-test`
+- Regras: [rules/react/](../../rules/react/) — estilo de código, hooks, padrões, segurança, testes
+- Skills: [react-performance](../react-performance/SKILL.md) para o conjunto de regras de performance derivado da Vercel, [frontend-patterns](../frontend-patterns/SKILL.md) para questões de UI entre frameworks, `accessibility`, `angular-developer` para comparação entre frameworks
+- Agentes: `react-reviewer` para revisão de código, `react-build-resolver` para erros de build/bundler
+- Comandos: `/react-review`, `/react-build`, `/react-test`
 
-## Examples
+## Exemplos
 
-### Custom hook for debounced search
+### Custom hook para busca com debounce
 
 ```tsx
 function useDebounce<T>(value: T, delay = 300): T {
@@ -301,7 +301,7 @@ function SearchBox() {
 }
 ```
 
-### Optimistic UI with React 19 `useOptimistic`
+### UI otimista com `useOptimistic` do React 19
 
 ```tsx
 "use client";
@@ -324,19 +324,19 @@ export function MessageList({ messages }: { messages: Message[] }) {
       <ul>{optimistic.map((m) => <li key={m.id}>{m.text}</li>)}</ul>
       <form action={send}>
         <input name="text" />
-        <button type="submit">Send</button>
+        <button type="submit">Enviar</button>
       </form>
     </>
   );
 }
 ```
 
-### Splitting context to avoid render cascades
+### Dividindo o context para evitar cascatas de render
 
 ```tsx
-// Two contexts: one rarely changes, one frequently
+// Dois contexts: um muda raramente, outro com frequência
 const ThemeContext = createContext<Theme>("light");
 const NotificationsContext = createContext<Notification[]>([]);
 
-// A component that only consumes ThemeContext does NOT re-render when notifications change
+// Um componente que só consome ThemeContext NÃO re-renderiza quando as notificações mudam
 ```

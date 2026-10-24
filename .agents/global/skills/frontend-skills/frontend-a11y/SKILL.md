@@ -1,63 +1,63 @@
 ---
 name: frontend-a11y
-description: Accessibility patterns for React and Next.js — semantic HTML, ARIA attributes, form labeling, keyboard navigation, focus management, and screen reader support. Use when building or reviewing forms, modals, dropdowns, tooltips, or tabs, fixing a11y lint or code-review findings, or wiring up keyboard navigation and focus management.
+description: Padrões de acessibilidade para React e Next.js — HTML semântico, atributos ARIA, labels de formulário, navegação por teclado, gerenciamento de foco e suporte a leitores de tela. Use ao construir ou revisar formulários, modais, dropdowns, tooltips ou abas, ao corrigir apontamentos de lint de a11y ou de code review, ou ao implementar navegação por teclado e gerenciamento de foco.
 metadata:
   origin: community
 ---
 
-# Frontend Accessibility Patterns
+# Padrões de Acessibilidade no Frontend
 
-Practical accessibility patterns for React and Next.js. Covers the issues most commonly flagged in code review: missing form labels, incorrect ARIA usage, non-semantic interactive elements, and broken keyboard navigation.
+Padrões práticos de acessibilidade para React e Next.js. Cobre os problemas mais apontados em code review: formulários sem label, uso incorreto de ARIA, elementos interativos não semânticos e navegação por teclado quebrada.
 
-## When to Activate
+## Quando Ativar
 
-- Building or reviewing form components (`<input>`, `<select>`, `<textarea>`)
-- Creating interactive elements (modals, dropdowns, tooltips, tabs)
-- Using `<div>` or `<span>` with `onClick`
-- Adding `aria-*` attributes to any element
-- Implementing keyboard navigation or focus management
-- Receiving accessibility feedback from code review tools (CodeRabbit, ESLint a11y)
-- Building components that must support screen readers
+- Ao construir ou revisar componentes de formulário (`<input>`, `<select>`, `<textarea>`)
+- Ao criar elementos interativos (modais, dropdowns, tooltips, abas)
+- Ao usar `<div>` ou `<span>` com `onClick`
+- Ao adicionar atributos `aria-*` a qualquer elemento
+- Ao implementar navegação por teclado ou gerenciamento de foco
+- Ao receber feedback de acessibilidade de ferramentas de code review (CodeRabbit, ESLint a11y)
+- Ao construir componentes que precisam funcionar com leitores de tela
 
-## Form Accessibility
+## Acessibilidade em Formulários
 
-Missing `htmlFor` / `id` pairing and disconnected error messages are the most common issues flagged in code review.
+A falta do par `htmlFor` / `id` e mensagens de erro desconectadas são os problemas mais apontados em code review.
 
-### Label Connection
+### Conexão do Label
 
 ```tsx
-// BAD: label has no connection to input — screen readers cannot associate them
-<label>Email</label>
+// RUIM: o label não tem ligação com o input — leitores de tela não conseguem associá-los
+<label>E-mail</label>
 <input type="email" />
 
-// GOOD: htmlFor matches input id
-<label htmlFor="email">Email</label>
+// BOM: htmlFor corresponde ao id do input
+<label htmlFor="email">E-mail</label>
 <input id="email" type="email" />
 ```
 
-### Required Fields
+### Campos Obrigatórios
 
 ```tsx
-// BAD: visual-only asterisk conveys nothing to screen readers
-<label htmlFor="email">Email *</label>
+// RUIM: asterisco apenas visual não comunica nada aos leitores de tela
+<label htmlFor="email">E-mail *</label>
 <input id="email" type="email" />
 
-// GOOD: required enables native browser validation; aria-required signals it to screen readers
+// BOM: required ativa a validação nativa do navegador; aria-required sinaliza aos leitores de tela
 <label htmlFor="email">
-  Email <span aria-hidden="true">*</span>
+  E-mail <span aria-hidden="true">*</span>
 </label>
 <input id="email" type="email" required aria-required="true" />
 ```
 
-### Error Messages
+### Mensagens de Erro
 
 ```tsx
-// BAD: error text exists visually but is not linked to the input
+// RUIM: o texto de erro existe visualmente, mas não está ligado ao input
 <input id="email" type="email" />
-<span className="error">Invalid email address</span>
+<span className="error">E-mail inválido</span>
 
-// GOOD: aria-describedby connects input to its error message
-// aria-invalid signals the invalid state to screen readers
+// BOM: aria-describedby conecta o input à sua mensagem de erro
+// aria-invalid sinaliza o estado inválido aos leitores de tela
 <input
   id="email"
   type="email"
@@ -71,7 +71,7 @@ Missing `htmlFor` / `id` pairing and disconnected error messages are the most co
 )}
 ```
 
-### Complete Accessible Form
+### Formulário Acessível Completo
 
 ```tsx
 interface LoginFormProps {
@@ -86,8 +86,8 @@ export function LoginForm({ onSubmit }: LoginFormProps) {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     const newErrors: typeof errors = {};
-    if (!email) newErrors.email = 'Email is required';
-    if (!password) newErrors.password = 'Password is required';
+    if (!email) newErrors.email = 'O e-mail é obrigatório';
+    if (!password) newErrors.password = 'A senha é obrigatória';
     if (Object.keys(newErrors).length) {
       setErrors(newErrors);
       return;
@@ -99,7 +99,7 @@ export function LoginForm({ onSubmit }: LoginFormProps) {
     <form onSubmit={handleSubmit} noValidate>
       <div>
         <label htmlFor="email">
-          Email <span aria-hidden="true">*</span>
+          E-mail <span aria-hidden="true">*</span>
         </label>
         <input
           id="email"
@@ -120,7 +120,7 @@ export function LoginForm({ onSubmit }: LoginFormProps) {
 
       <div>
         <label htmlFor="password">
-          Password <span aria-hidden="true">*</span>
+          Senha <span aria-hidden="true">*</span>
         </label>
         <input
           id="password"
@@ -139,79 +139,79 @@ export function LoginForm({ onSubmit }: LoginFormProps) {
         )}
       </div>
 
-      <button type="submit">Log in</button>
+      <button type="submit">Entrar</button>
     </form>
   );
 }
 ```
 
-## Semantic HTML
+## HTML Semântico
 
-Use the element that matches the intent. Screen readers and keyboard users depend on native semantics.
+Use o elemento que corresponde à intenção. Leitores de tela e usuários de teclado dependem da semântica nativa.
 
 ```tsx
-// BAD: div has no role, no keyboard support, no accessible name
-<div onClick={handleClick}>Submit</div>
+// RUIM: a div não tem role, suporte a teclado nem nome acessível
+<div onClick={handleClick}>Enviar</div>
 
-// GOOD: button is focusable, activates on Enter/Space, announces as "button"
-<button type="button" onClick={handleClick}>Submit</button>
+// BOM: o button recebe foco, é ativado com Enter/Espaço e é anunciado como "botão"
+<button type="button" onClick={handleClick}>Enviar</button>
 ```
 
 ```tsx
-// BAD: non-semantic navigation
-<div onClick={() => navigate('/home')}>Home</div>
+// RUIM: navegação não semântica
+<div onClick={() => navigate('/home')}>Início</div>
 
-// GOOD: anchor supports right-click, middle-click, and keyboard navigation
-<a href="/home">Home</a>
+// BOM: a âncora suporta clique direito, clique do meio e navegação por teclado
+<a href="/home">Início</a>
 ```
 
 ```tsx
-// BAD: heading hierarchy skipped (h1 to h4)
-<h1>Dashboard</h1>
-<h4>Recent Activity</h4>
+// RUIM: hierarquia de headings pulada (h1 para h4)
+<h1>Painel</h1>
+<h4>Atividade Recente</h4>
 
-// GOOD: sequential heading levels
-<h1>Dashboard</h1>
-<h2>Recent Activity</h2>
+// BOM: níveis de heading em sequência
+<h1>Painel</h1>
+<h2>Atividade Recente</h2>
 ```
 
-## ARIA Attributes
+## Atributos ARIA
 
-Use ARIA only when native HTML semantics are insufficient. Wrong ARIA is worse than no ARIA.
+Use ARIA apenas quando a semântica nativa do HTML não for suficiente. ARIA errado é pior que nenhum ARIA.
 
 ### aria-label vs aria-labelledby
 
 ```tsx
-// aria-label: inline string label — use when no visible label text exists
-<button aria-label="Close modal">
+// aria-label: label em string inline — use quando não houver texto de label visível
+<button aria-label="Fechar modal">
   <XIcon />
 </button>
 
-// aria-labelledby: references another element's text — use when a visible label exists
+// aria-labelledby: referencia o texto de outro elemento — use quando houver label visível
 <section aria-labelledby="section-title">
-  <h2 id="section-title">Recent Orders</h2>
-  {/* content */}
+  <h2 id="section-title">Pedidos Recentes</h2>
+  {/* conteúdo */}
 </section>
 ```
 
 ### aria-describedby
 
 ```tsx
-// Provides supplementary description beyond the label
+// Fornece uma descrição complementar além do label
 <button
   aria-describedby="delete-warning"
   onClick={handleDelete}
-> Delete account
+> Excluir conta
 </button>
-<p id="delete-warning">This action cannot be undone.</p>
+<p id="delete-warning">Esta ação não pode ser desfeita.</p>
 ```
 
-### aria-live for Dynamic Content
+### aria-live para Conteúdo Dinâmico
 
 ```tsx
-// Use aria-live to announce content that updates without a page reload
-// polite: waits for user to finish current action before announcing
-// assertive: interrupts immediately — use only for urgent errors
+// Use aria-live para anunciar conteúdo que é atualizado sem recarregar a página
+// polite: espera o usuário terminar a ação atual antes de anunciar
+// assertive: interrompe imediatamente — use apenas para erros urgentes
 
 export function StatusMessage({ message, isError }: { message: string; isError?: boolean }) {
   return (
@@ -222,7 +222,7 @@ export function StatusMessage({ message, isError }: { message: string; isError?:
 }
 ```
 
-### aria-expanded and aria-controls
+### aria-expanded e aria-controls
 
 ```tsx
 export function Accordion({ title, children }: { title: string; children: React.ReactNode }) {
@@ -242,11 +242,11 @@ export function Accordion({ title, children }: { title: string; children: React.
 }
 ```
 
-## Keyboard Navigation
+## Navegação por Teclado
 
-Every interactive element must be reachable and operable by keyboard alone.
+Todo elemento interativo precisa ser alcançável e operável apenas pelo teclado.
 
-### Custom Dropdown
+### Dropdown Customizado
 
 ```tsx
 export function Dropdown({ options, onSelect }: { options: string[]; onSelect: (value: string) => void }) {
@@ -311,13 +311,13 @@ export function Dropdown({ options, onSelect }: { options: string[]; onSelect: (
 }
 ```
 
-## Focus Management
+## Gerenciamento de Foco
 
-Focus must move logically when UI state changes — especially for modals and route transitions.
+O foco precisa se mover de forma lógica quando o estado da UI muda — principalmente em modais e transições de rota.
 
-### Modal Focus Restoration
+### Restauração do Foco em Modais
 
-> This example covers initial focus and restoration. For a full focus trap (Tab/Shift+Tab cycling within the modal), use a library like [`focus-trap-react`](https://github.com/focus-trap/focus-trap-react) which handles edge cases like dynamic content and nested portals.
+> Este exemplo cobre o foco inicial e a restauração. Para um focus trap completo (ciclo de Tab/Shift+Tab dentro do modal), use uma biblioteca como [`focus-trap-react`](https://github.com/focus-trap/focus-trap-react), que trata casos de borda como conteúdo dinâmico e portals aninhados.
 
 ```tsx
 export function Modal({ isOpen, onClose, title, children }: { isOpen: boolean; onClose: () => void; title: string; children: React.ReactNode }) {
@@ -326,11 +326,11 @@ export function Modal({ isOpen, onClose, title, children }: { isOpen: boolean; o
 
   useEffect(() => {
     if (isOpen) {
-      // Save currently focused element and move focus into modal
+      // Salva o elemento focado atualmente e move o foco para dentro do modal
       previousFocusRef.current = document.activeElement as HTMLElement;
       modalRef.current?.focus();
     } else {
-      // Restore focus to the element that opened the modal
+      // Devolve o foco ao elemento que abriu o modal
       previousFocusRef.current?.focus();
     }
   }, [isOpen]);
@@ -341,33 +341,33 @@ export function Modal({ isOpen, onClose, title, children }: { isOpen: boolean; o
     <div ref={modalRef} role="dialog" aria-modal="true" aria-labelledby="modal-title" tabIndex={-1} onKeyDown={e => e.key === 'Escape' && onClose()}>
       <h2 id="modal-title">{title}</h2>
       {children}
-      <button onClick={onClose}>Close</button>
+      <button onClick={onClose}>Fechar</button>
     </div>
   );
 }
 ```
 
-## Images and Icons
+## Imagens e Ícones
 
 ```tsx
-// BAD: decorative icon announced as unlabeled image
+// RUIM: ícone decorativo anunciado como imagem sem label
 <img src="/icon.svg" />
 
-// GOOD: decorative image hidden from screen readers
+// BOM: imagem decorativa escondida dos leitores de tela
 <img src="/decoration.png" alt="" aria-hidden="true" />
 
-// GOOD: meaningful image with descriptive alt text
-<img src="/chart.png" alt="Monthly revenue increased 23% from January to March" />
+// BOM: imagem significativa com texto alternativo descritivo
+<img src="/chart.png" alt="A receita mensal aumentou 23% de janeiro a março" />
 
-// GOOD: icon button with accessible label
-<button aria-label="Delete item">
+// BOM: botão de ícone com label acessível
+<button aria-label="Excluir item">
   <TrashIcon aria-hidden="true" />
 </button>
 ```
 
-## Reduced Motion
+## Movimento Reduzido
 
-Respect users who have requested reduced motion in their OS settings.
+Respeite os usuários que pediram movimento reduzido nas configurações do sistema operacional.
 
 ```tsx
 export function useReducedMotion(): boolean {
@@ -384,7 +384,7 @@ export function useReducedMotion(): boolean {
   return prefersReduced;
 }
 
-// Usage
+// Uso
 export function AnimatedCard({ children }: { children: React.ReactNode }) {
   const reduceMotion = useReducedMotion();
 
@@ -400,44 +400,45 @@ export function AnimatedCard({ children }: { children: React.ReactNode }) {
 }
 ```
 
-## Anti-Patterns
+## Antipadrões
 
 ```tsx
-// BAD: onClick on non-interactive element with no keyboard support
-<div onClick={handleClick}>Click me</div>
+// RUIM: onClick em elemento não interativo, sem suporte a teclado
+<div onClick={handleClick}>Clique aqui</div>
 
-// BAD: aria-label on a div that has no role
-<div aria-label="Navigation">...</div>
+// RUIM: aria-label em uma div sem role
+<div aria-label="Navegação">...</div>
 
-// BAD: placeholder used as a substitute for label
-<input placeholder="Enter your email" />
+// RUIM: placeholder usado no lugar do label
+<input placeholder="Digite seu e-mail" />
 
-// BAD: positive tabIndex creates unpredictable tab order
-<button tabIndex={3}>Submit</button>
+// RUIM: tabIndex positivo cria uma ordem de tabulação imprevisível
+<button tabIndex={3}>Enviar</button>
 
-// BAD: aria-hidden on a focusable element — keyboard users get trapped
-<button aria-hidden="true">Open</button>
+// RUIM: aria-hidden em um elemento focável — usuários de teclado ficam presos
+<button aria-hidden="true">Abrir</button>
 
-// BAD: role="button" on div without keyboard handler
-<div role="button" onClick={handleClick}>Submit</div>
-// Missing: tabIndex={0}, onKeyDown for Enter/Space
+// RUIM: role="button" em div sem handler de teclado
+<div role="button" onClick={handleClick}>Enviar</div>
+// Faltando: tabIndex={0}, onKeyDown para Enter/Espaço
 ```
 
 ## Checklist
 
-Before submitting any interactive component for review:
+Antes de enviar qualquer componente interativo para revisão:
 
-- [ ] Every `<input>`, `<select>`, and `<textarea>` has a connected `<label>` via `htmlFor`/`id`
-- [ ] Error messages are linked with `aria-describedby` and marked `role="alert"`
-- [ ] No `onClick` on `<div>` or `<span>` without `role`, `tabIndex`, and `onKeyDown`
-- [ ] Icon-only buttons have `aria-label`
-- [ ] Decorative images use `alt=""` and `aria-hidden="true"`
-- [ ] Modals restore focus on close (for full focus trapping with Tab/Shift+Tab cycling, use a library like `focus-trap-react`)
-- [ ] Dynamic content updates use `aria-live`
-- [ ] `prefers-reduced-motion` is respected for animations
+- [ ] Todo `<input>`, `<select>` e `<textarea>` tem um `<label>` conectado via `htmlFor`/`id`
+- [ ] Mensagens de erro estão ligadas com `aria-describedby` e marcadas com `role="alert"`
+- [ ] Nenhum `onClick` em `<div>` ou `<span>` sem `role`, `tabIndex` e `onKeyDown`
+- [ ] Botões só com ícone têm `aria-label`
+- [ ] Imagens decorativas usam `alt=""` e `aria-hidden="true"`
+- [ ] Modais devolvem o foco ao fechar (para focus trap completo com ciclo de Tab/Shift+Tab, use uma biblioteca como `focus-trap-react`)
+- [ ] Atualizações de conteúdo dinâmico usam `aria-live`
+- [ ] `prefers-reduced-motion` é respeitado nas animações
 
-## Related Skills
+## Skills Relacionadas
 
-- `frontend-patterns` — general React component and state patterns
-- `design-system` — design token and component consistency
-- `motion-foundations` and `motion-patterns`: animation patterns with accessibility considerations
+- `frontend-patterns` — padrões gerais de componentes e estado em React
+- `accessibility` — critérios da WCAG 2.2 para Web, iOS e Android
+- `design-system` — consistência de design tokens e componentes
+- `motion-foundations` e `motion-patterns`: padrões de animação com considerações de acessibilidade

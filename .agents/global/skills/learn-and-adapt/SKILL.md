@@ -1,3 +1,8 @@
+---
+name: learn-and-adapt
+description: "Captura as correções e preferências de estilo do usuário (exceções de domínio, tipagem, padrões de repositório, DTOs) e as replica nas tarefas seguintes da sessão. Use quando o usuário corrigir código gerado ou estabelecer um padrão a ser seguido."
+---
+
 # Skill: Aprender e Adaptar (Sincronização Contínua de Padrões)
 
 ## Propósito

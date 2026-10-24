@@ -1,3 +1,8 @@
+---
+name: to-spec
+description: "Sintetiza a conversa, ADRs e vocabulário de domínio já acordados em uma especificação técnica salva em .agents/project/docs/specs/<feature>-spec.md, sem entrevistar o usuário. Use após um planejamento (ex.: grill-plan) quando o usuário pedir a spec."
+---
+
 # Skill: To Spec (Sintetizador de Especificação Técnica)
 
 ## Propósito
