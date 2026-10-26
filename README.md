@@ -24,7 +24,7 @@ Este repositório centraliza a governança, os padrões arquiteturais e as skill
 .agents/project/
   PROJECT_MAP.md                 → GPS do projeto (preencher a seção "Código-fonte")
   PROJECT_RULES.md               → stack, comandos, restrições e RESPONSÁVEIS por área
-  tasks/                         → tasks NNN-slug#<issue>.md (to-tickets)
+  tasks/                         → tasks NNN-slug-ISS<issue>.md (to-tickets)
   docs/
     README.md                    → porta de entrada + regras para IA
     guia-fluxo-documentacao.md   → quando abrir RFC/design e quem aprova
@@ -55,13 +55,13 @@ utils/                           → copiado para a RAIZ do projeto consumidor
 | 2 | Registrar decisão de padrão/contrato (condicional) | `rfc-workflow` | `docs/<area>/rfcs/` e `docs/<area>/designs/` |
 | 3 | Aprovação do RFC (se a categoria exige) | — | RFC `Aceito` |
 | 4 | Especificar | `to-spec` | `docs/specs/<feature>-spec.md` |
-| 5 | Fatiar | `to-tickets` | `tasks/<NNN>-<slug>#<issue>.md` |
+| 5 | Fatiar | `to-tickets` | `tasks/<NNN>-<slug>-ISS<issue>.md` |
 | 6 | Implementar com TDD | `execute-task` + `tdd-workflow` + skill do domínio | código + testes |
-| 7 | Registrar progresso | `update-progress` | `docs/progress/<NNN>-<slug>#<issue>-log.md` |
+| 7 | Registrar progresso | `update-progress` | `docs/progress/<NNN>-<slug>-ISS<issue>-log.md` |
 | 8 | Commit e PR | `smart-commit` / `create-pr` | commits + PR |
 | 9 | Fechar o ciclo | — | RFC `Implementado`, design `Pronto`, índices atualizados |
 
-Detalhes: [`.agents/global/GLOBAL_RULES.md`](.agents/global/GLOBAL_RULES.md) (seção 2.1) e [`utils/.agents/project/docs/README.md`](utils/.agents/project/docs/README.md).
+Exemplo completo, passando por todas as skills: [`.agents/global/FLUXO_DE_TRABALHO.md`](.agents/global/FLUXO_DE_TRABALHO.md). Detalhes: [`.agents/global/GLOBAL_RULES.md`](.agents/global/GLOBAL_RULES.md) (seção 2.1) e [`utils/.agents/project/docs/README.md`](utils/.agents/project/docs/README.md).
 
 ---
 

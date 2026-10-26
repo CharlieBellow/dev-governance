@@ -35,3 +35,4 @@ Se a tarefa for implementação direta, seguindo o que já está documentado, n�
 - **Specs de feature:** `.agents/project/docs/specs/`
 - **Tasks Ativas:** `.agents/project/tasks/`
 - **Diário de Progresso:** `.agents/project/docs/progress/`
+- **Exemplo de fluxo completo:** `node_modules/dev-governance/.agents/global/FLUXO_DE_TRABALHO.md`

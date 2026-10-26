@@ -8,12 +8,13 @@
 - `.github/pull_request_template.md` # Template de PR (copiado de node_modules/dev-governance/utils/.github/)
 - `node_modules/dev-governance/.agents/global/` # = `.agents/global/` — regras e skills globais (somente leitura)
   - `GLOBAL_RULES.md`            # Regras universais, Matriz de Skills e Pipeline de Trabalho
+  - `FLUXO_DE_TRABALHO.md`       # Exemplo completo de issue → PR
   - `task/template-task.md`      # Formato padrão de task
   - `skills/`                    # grill-plan, rfc-workflow, to-spec, to-tickets, execute-task, update-progress, smart-commit, create-pr...
 - `.agents/project/`
   - `PROJECT_MAP.md`             # Este mapa
   - `PROJECT_RULES.md`           # Stack e regras específicas deste projeto
-  - `tasks/`                     # Tasks de fatia vertical (NNN-slug#<issue>.md — ex.: 001-rota-delete-users#42.md)
+  - `tasks/`                     # Tasks de fatia vertical (NNN-slug-ISS<issue>.md — ex.: 001-rota-delete-users-ISS42.md)
   - `docs/`
     - `README.md`                # Porta de entrada da documentação + regras para IA
     - `guia-fluxo-documentacao.md` # Quando abrir RFC/design, janelas de aviso
@@ -23,7 +24,7 @@
     - `back/`                    # README (padrões vigentes), rfcs/ (BE-), designs/ (BE-D-)
     - `front/`                   # README, design-system.md, rfcs/ (FE-), designs/ (FE-D-)
     - `specs/`                   # Specs de feature (<feature>-spec.md)
-    - `progress/`                # Diário de bordo por task (<NNN>-<slug>#<issue>-log.md)
+    - `progress/`                # Diário de bordo por task (<NNN>-<slug>-ISS<issue>-log.md)
 
 ## 📁 Código-fonte (preencher)
 

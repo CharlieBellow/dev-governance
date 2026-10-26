@@ -10,6 +10,7 @@
 - `.agents/`
   - `global/`                    # ⬅ Distribuído aos projetos via node_modules (somente leitura lá)
     - `GLOBAL_RULES.md`          # Regras universais, Matriz de Skills e Pipeline de Trabalho
+    - `FLUXO_DE_TRABALHO.md`     # Exemplo completo: issue → PR passando por todas as skills
     - `specs/template-spec.md`   # Blueprint de spec
     - `task/template-task.md`    # Formato padrão de task (usado por to-tickets)
     - `skills/`
@@ -30,7 +31,7 @@
   - `project/`                   # Instância de .agents/project usada POR ESTE repositório
     - `PROJECT_MAP.md`           # Este mapa
     - `PROJECT_RULES.md`         # Regras do projeto de exemplo (To-Do API)
-    - `tasks/`                   # Tasks deste repositório (NNN-slug#<issue>.md)
+    - `tasks/`                   # Tasks deste repositório (NNN-slug-ISS<issue>.md)
     - `docs/`                    # Mesma estrutura de utils/.agents/project/docs (ver abaixo)
 - `utils/`                       # ⬅ Espelho da RAIZ do projeto consumidor: tudo aqui é copiado para lá
   - `AGENTS.md`                  # → AGENTS.md na raiz do projeto (protocolo do agente)

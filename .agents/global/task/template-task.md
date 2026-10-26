@@ -1,6 +1,6 @@
 # <NNN>: <Título da Tarefa> (#<issue>)
 
-> Arquivo: `.agents/project/tasks/<NNN>-<slug>#<issue>.md` — ex.: `001-rota-delete-users#42.md`. O sufixo `#<issue>` liga a task à issue que a gerou.
+> Arquivo: `.agents/project/tasks/<NNN>-<slug>-ISS<issue>.md` — ex.: `001-rota-delete-users-ISS42.md`. O sufixo `-ISS<issue>` liga a task à issue que a gerou.
 
 | Campo | Valor |
 |---|---|
@@ -35,5 +35,5 @@ Comportamento ponta a ponta que esta tarefa faz funcionar (do ponto de vista de 
 
 ## Ao concluir
 - Atualizar status para `concluído`.
-- Gerar log com a skill `update-progress` em `.agents/project/docs/progress/<NNN>-<slug>#<issue>-log.md`.
+- Gerar log com a skill `update-progress` em `.agents/project/docs/progress/<NNN>-<slug>-ISS<issue>-log.md`.
 - Commit no padrão de `.agents/project/docs/convencoes-git.md` com rodapé `Refs #<issue>` e `Task: <NNN>` (e `RFC: <ID>`, se houver).

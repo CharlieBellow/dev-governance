@@ -1,6 +1,6 @@
 ---
 name: to-tickets
-description: "Quebra uma spec, plano ou conversa em tasks de fatia vertical (tracer-bullets) com dependências, salvas em .agents/project/tasks/<NNN>-<slug>#<issue>.md seguindo .agents/global/task/template-task.md. Use quando o usuário pedir para fatiar uma spec em tasks/tickets."
+description: "Quebra uma spec, plano ou conversa em tasks de fatia vertical (tracer-bullets) com dependências, salvas em .agents/project/tasks/<NNN>-<slug>-ISS<issue>.md seguindo .agents/global/task/template-task.md. Use quando o usuário pedir para fatiar uma spec em tasks/tickets."
 ---
 
 # Skill: To Tickets (Fatiamento Vertical e Quebra de Tarefas)
@@ -15,8 +15,10 @@ Quebrar uma especificação, plano ou conversa atual em um conjunto de **tarefas
 4. **Refatores Amplos:** Se uma mudança quebradora abranger todo o código, use uma sequência de expansão e contratação (*expand-contract*).
 5. **Rastreabilidade:** Toda task referencia a spec de origem e os RFCs/designs que ela implementa. A task **não redefine** contrato nem padrão — aponta para onde ele está decidido.
 6. **Bloqueio por Decisão:** Se a spec depende de RFC com status `Proposto`, toda task que implementa essa decisão recebe `Bloqueado por: aprovação do RFC <ID>`.
+7. **Uma Issue, uma Área:** Uma issue é só de back **ou** só de front. Se a entrega exigir mudança na outra área, **não crie task dela**: sugira abrir uma issue na outra área (no outro repositório, ou no mesmo, se for monorepo). Se uma parte do trabalho só puder ser feita **depois** que a outra área entregar (ex.: remover rota antiga só após o front migrar), ela também não entra nesta issue: sugira uma nova issue, bloqueada pela da outra área.
+8. **Fora do Escopo:** Algo descoberto que não pertence à issue (ex.: código duplicado) não vira task dela: sugira abrir uma nova issue.
 
 ## Formato de Saída (Arquivos Locais em `.agents/project/tasks/`)
 1. Descubra o **maior número já usado** em `.agents/project/tasks/` e continue a partir dele (numeração global de 3 dígitos — nunca reinicie em `001` para uma nova spec, para não colidir com tasks anteriores).
-2. Escreva um arquivo por tarefa em **`.agents/project/tasks/<NNN>-<slug>#<issue>.md`**, em ordem de dependência, seguindo **`.agents/global/task/template-task.md`**. O sufixo `#<issue>` é o número da issue que gerou a task (ex.: `001-rota-delete-users#42.md`). Se o número da issue não estiver na conversa ou na spec, **pergunte antes de criar os arquivos**.
+2. Escreva um arquivo por tarefa em **`.agents/project/tasks/<NNN>-<slug>-ISS<issue>.md`**, em ordem de dependência, seguindo **`.agents/global/task/template-task.md`**. O sufixo `-ISS<issue>` é o número da issue que gerou a task (ex.: `001-rota-delete-users-ISS42.md`). Se o número da issue não estiver na conversa ou na spec, **pergunte antes de criar os arquivos**.
 3. Ao final, liste as tasks criadas com suas dependências em formato de árvore, agrupadas por issue.

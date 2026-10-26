@@ -34,7 +34,7 @@ Sempre que for iniciar uma tarefa, o agente DEVE ler as diretrizes contidas na s
 | **Git** | Mensagens de commit, branches, texto de Pull Request | `.agents/project/docs/convencoes-git.md` + `.agents/global/skills/smart-commit/SKILL.md` · `.agents/global/skills/create-pr/SKILL.md` |
 
 ## 2.1 Pipeline de Trabalho (Issue → PR)
-Toda issue percorre as etapas abaixo, nesta ordem. Etapas marcadas como condicionais só acontecem quando o critério se aplica.
+Toda issue percorre as etapas abaixo, nesta ordem. Etapas marcadas como condicionais só acontecem quando o critério se aplica. Exemplo completo, com a convenção de nomes `-ISS<issue>`: [`FLUXO_DE_TRABALHO.md`](FLUXO_DE_TRABALHO.md).
 
 | # | Etapa | Skill | Artefato gerado |
 |---|---|---|---|
@@ -42,10 +42,10 @@ Toda issue percorre as etapas abaixo, nesta ordem. Etapas marcadas como condicio
 | 2 | **Condicional:** registrar decisão de padrão/contrato | `rfc-workflow` | RFC e/ou design em `.agents/project/docs/<area>/` |
 | 3 | Aguardar aprovação do RFC (se a categoria exige confirmação ativa) | — | Status `Aceito` no RFC |
 | 4 | Especificar a feature | `to-spec` | `.agents/project/docs/specs/<feature>-spec.md` |
-| 5 | Fatiar em tasks verticais | `to-tickets` | `.agents/project/tasks/<NNN>-<slug>#<issue>.md` (ex.: `001-rota-delete-users#42.md`) |
+| 5 | Fatiar em tasks verticais | `to-tickets` | `.agents/project/tasks/<NNN>-<slug>-ISS<issue>.md` (ex.: `001-rota-delete-users-ISS42.md`) |
 | 6 | Implementar cada task com TDD | `execute-task` + `tdd-workflow` (+ skill do domínio da matriz) | Código + testes |
-| 7 | Registrar o progresso | `update-progress` | `.agents/project/docs/progress/<NNN>-<slug>#<issue>-log.md` |
-| 8 | Commit e PR (PR quando **todas** as tasks `#<issue>` estiverem concluídas) | `smart-commit` / `create-pr` | Commits + texto de PR da issue |
+| 7 | Registrar o progresso | `update-progress` | `.agents/project/docs/progress/<NNN>-<slug>-ISS<issue>-log.md` |
+| 8 | Commit e PR (PR quando **todas** as tasks `-ISS<issue>` estiverem concluídas) | `smart-commit` / `create-pr` | Commits + texto de PR da issue |
 | 9 | Fechar o ciclo | — | Status do RFC → `Implementado`, design → `Pronto`, índices atualizados |
 
 ## 2.2 Documentação Antes do Código (Governança de Decisões)

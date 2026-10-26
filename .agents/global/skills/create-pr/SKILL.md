@@ -1,20 +1,20 @@
 ---
 name: create-pr
-description: "Gera o texto de Pull Request de uma issue a partir de todas as suas tasks (.agents/project/tasks/*#<issue>.md) e logs (.agents/project/docs/progress/*#<issue>-log.md). Use quando o usuário pedir o texto/descrição da PR de uma issue ou task."
+description: "Gera o texto de Pull Request de uma issue a partir de todas as suas tasks (.agents/project/tasks/*-ISS<issue>.md) e logs (.agents/project/docs/progress/*-ISS<issue>-log.md). Use quando o usuário pedir o texto/descrição da PR de uma issue ou task."
 ---
 
 # Skill: Gerar Texto de Pull Request (Smart PR)
 
 ## Descrição
-Lê **todas as tasks de uma issue** (`.agents/project/tasks/*#<issue>.md`) e os Logs de Progresso correspondentes (`.agents/project/docs/progress/*#<issue>-log.md`) para gerar um texto de Pull Request rico, estruturado, profissional e pronto para ser copiado.
+Lê **todas as tasks de uma issue** (`.agents/project/tasks/*-ISS<issue>.md`) e os Logs de Progresso correspondentes (`.agents/project/docs/progress/*-ISS<issue>-log.md`) para gerar um texto de Pull Request rico, estruturado, profissional e pronto para ser copiado.
 
 ## Como Acionar / Executar
 Use o comando: `Gere o texto da PR da issue #[issue]`
 
 ## Instruções para o Agente
 Quando acionado, o agente DEVE:
-1. Listar as tasks da issue pelo sufixo do nome: `.agents/project/tasks/*#[issue].md`. Se alguma **não** estiver com status `concluído`, **pare** e liste o que falta — o PR só é gerado com todas as tasks da issue concluídas.
-2. Ler os logs correspondentes em `.agents/project/docs/progress/*#[issue]-log.md`.
+1. Listar as tasks da issue pelo sufixo do nome: `.agents/project/tasks/*-ISS[issue].md`. Se alguma **não** estiver com status `concluído`, **pare** e liste o que falta — o PR só é gerado com todas as tasks da issue concluídas.
+2. Ler os logs correspondentes em `.agents/project/docs/progress/*-ISS[issue]-log.md`.
 3. Sintetizar as informações combinando o problema inicial com a solução implementada, gerando o markdown abaixo.
 4. Se o projeto tiver `.github/pull_request_template.md`, usar **esse** template (prevalece sobre o abaixo) e seguir `.agents/project/docs/convencoes-git.md` para o título.
 5. Referenciar o RFC/design relacionado em `.agents/project/docs/` (back, front ou geral), quando houver.
