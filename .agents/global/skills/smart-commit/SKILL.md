@@ -10,10 +10,11 @@ Analisa as alterações recentes no repositório (via `git status` / `git diff`)
 
 ## Instruções para Execução do Agente
 Quando esta skill for acionada, execute os seguintes passos internamente:
+0. **Convenções do projeto:** Se existir `.agents/project/docs/convencoes-git.md` no projeto, ele é a fonte da verdade (tipos, escopos, rodapé `RFC:`, `BREAKING CHANGE`) e prevalece sobre esta skill. Se existir `.github/pull_request_template.md` na raiz, use-o no lugar do template abaixo.
 1. **Inspeção:** Verifique os arquivos modificados e o diff atual do projeto.
-2. **Classificação:** Defina o tipo de alteração (`feat`, `fix`, `refactor`, `chore`, `test`) com base nas modificações.
-3. **Geração do Commit:** Escreva uma mensagem de commit objetiva usando o padrão Conventional Commits (ex: `feat(domain): adiciona validação de regra de negócio para usuário`).
-4. **Geração do Corpo da PR:** Preencha rigorosamente o template abaixo com base no que foi alterado e nas discussões técnicas recentes.
+2. **Classificação:** Defina o tipo de alteração (`feat`, `fix`, `refactor`, `chore`, `test`, `docs`, `ci`, `perf`) e o escopo por área (`back/<modulo>`, `front/<modulo>`, `rfc`, `design`).
+3. **Geração do Commit:** Escreva uma mensagem de commit objetiva usando o padrão Conventional Commits (ex: `feat(back/users): adiciona validação de regra de negócio para usuário`). Se a mudança implementa um RFC, inclua `RFC: <ID>` no rodapé.
+4. **Geração do Corpo da PR:** Preencha rigorosamente o template com base no que foi alterado e nas discussões técnicas recentes, referenciando RFC/design em `.agents/project/docs/` quando houver.
 
 ---
 

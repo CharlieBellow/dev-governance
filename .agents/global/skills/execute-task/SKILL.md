@@ -1,6 +1,6 @@
 ---
 name: execute-task
-description: "Executa uma task/spec de .agents/project/project-tasks/ de forma isolada, lendo só o PROJECT_MAP.md e a task, com Clean Architecture, DDD, validação Zod, testes Vitest obrigatórios e relatório de entrega. Use quando o usuário pedir para executar/implementar uma task pelo nome."
+description: "Executa uma task de .agents/project/tasks/ de forma isolada, lendo só o PROJECT_MAP.md, a task e os RFC/design que ela referencia, com Clean Architecture, DDD, validação Zod, testes Vitest obrigatórios e relatório de entrega. Use quando o usuário pedir para executar/implementar uma task pelo nome ou número."
 ---
 
 # Skill: Executar Task Unificada
@@ -9,14 +9,17 @@ description: "Executa uma task/spec de .agents/project/project-tasks/ de forma i
 Instrui o agente Sênior a executar uma Task/Spec específica de forma isolada, garantindo o uso de Clean Architecture, Domain-Driven Design, validações com Zod e cobertura obrigatória de testes com Vitest.
 
 ## Como Acionar
-Use o comando: `Execute a task [nome-da-task]-task.md`
+Use o comando: `Execute a task [NNN]-[nome-da-task].md`
 
 ## ⚙️ Diretrizes Obrigatórias de Execução para o Agente
 Quando esta skill for acionada, você (agente) DEVE seguir estritamente o protocolo abaixo:
 
 1. **Leitura Cirúrgica (Economia de Tokens):** 
-   - Leia APENAS o arquivo `.agents/project/PROJECT_MAP.md` e o arquivo da Task especificada em `.agents/project/project-tasks/[nome-da-task]-task.md`. 
+   - Leia APENAS o arquivo `.agents/project/PROJECT_MAP.md`, o arquivo da Task em `.agents/project/tasks/[NNN]-[nome-da-task].md` e **somente** os RFC/design/spec que a task referencia.
    - NUNCA varra o repositório inteiro.
+1.1. **Portão de Governança:**
+   - Se `Bloqueado por` cita uma task não concluída ou um RFC que não está `Aceito`, **pare** e informe o bloqueio — não implemente.
+   - Implemente o contrato **exatamente** como está no design referenciado. Se a implementação exigir desviar dele, pare e proponha alteração do design/RFC (skill `rfc-workflow`).
 2. **Postura Pedagógica (Sênior para Júnior):**
    - Explique o raciocínio técnico passo a passo antes de escrever o código.
    - Detalhe os padrões de projeto aplicados (ex: Repository Pattern, Value Objects) e os potenciais erros evitados.

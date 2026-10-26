@@ -1,6 +1,6 @@
 ---
 name: create-pr
-description: "Gera o texto de Pull Request a partir da task em .agents/project/project-tasks/ e do log de progresso em .agents/project/docs/progress/. Use quando o usuário pedir o texto/descrição da PR de uma task específica."
+description: "Gera o texto de Pull Request a partir da task em .agents/project/tasks/ e do log de progresso em .agents/project/docs/progress/. Use quando o usuário pedir o texto/descrição da PR de uma task específica."
 ---
 
 # Skill: Gerar Texto de Pull Request (Smart PR)
@@ -13,9 +13,11 @@ Use o comando: `Gere o texto da PR para a task [numero]-[nome-da-task]`
 
 ## Instruções para o Agente
 Quando acionado, o agente DEVE:
-1. Ler o arquivo da Task em `.agents/project/project-tasks/[numero]-[nome-da-task]-task.md`.
+1. Ler o arquivo da Task em `.agents/project/tasks/[numero]-[nome-da-task].md`.
 2. Ler o arquivo de Log em `.agents/project/docs/progress/[numero]-[nome-da-task]-log.md`.
 3. Sintetizar as informações combinando o problema inicial com a solução implementada, gerando o markdown abaixo.
+4. Se o projeto tiver `.github/pull_request_template.md`, usar **esse** template (prevalece sobre o abaixo) e seguir `.agents/project/docs/convencoes-git.md` para o título.
+5. Referenciar o RFC/design relacionado em `.agents/project/docs/` (back, front ou geral), quando houver.
 
 ---
 

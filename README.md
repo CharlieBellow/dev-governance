@@ -1,60 +1,118 @@
 # Dev Governance & Engineering Standards
 
-Este repositório centraliza a governança, os padrões arquiteturais e as skills dos agentes de IA para todos os projetos (como a API do TransCenso e futuros sistemas em NestJS, Next.js, Prisma e MySQL).
+Este repositório centraliza a governança, os padrões arquiteturais e as skills dos agentes de IA para todos os projetos ( futuros sistemas em NestJS, Next.js, Prisma e MySQL).
 
 ## Princípios de Engenharia
 - **Clean Architecture & DDD:** Separação rígida entre Domínio (puro), Aplicação (casos de uso) e Infraestrutura (Prisma/NestJS).
 - **TDD Rigoroso:** Ciclo Red -> Green -> Refactor utilizando **Vitest** para cobrir regras de negócio do Domínio.
 - **Tipagem Estrita:** TypeScript em strict mode, imutabilidade e tratamento centralizado de exceções de domínio.
+- **Documentação antes do código:** decisões de padrão e contratos viram RFC/design **antes** da implementação. Divergir de uma decisão registrada nunca é silencioso.
 
-## Estrutura de Documentação (`docs/`)
-Todo o planejamento gerado pelas IAs é armazenado de forma permanente e organizada na pasta `docs/` do projeto:
-- **`docs/specs/`**: Especificações técnicas sintetizadas.
-- **`docs/tasks/`**: Fatias de tarefas verticais (*tracer-bullets*).
-- **`docs/adr/`**: Registros de Decisão Arquitetural.
+## Como o repositório se divide
 
-## Fluxo de Trabalho com Agentes
-1. **Planejamento:** `/grill-plan` (Entrevista em rodadas para debater requisitos e regras de negócio).
-2. **Especificação:** `/to-spec` (Sintetiza o alinhamento em uma spec salva em `docs/specs/`).
-3. **Fatiamento:** `/to-tickets` (Quebra a spec em tarefas verticais salvas em `docs/tasks/`).
-4. **Implementação:** Execução guiada por TDD e Clean Code.
+| Pasta | O que é | No projeto consumidor |
+|---|---|---|
+| `.agents/global/` | Regras globais (`GLOBAL_RULES.md`), skills e templates de spec/task | Fica em `node_modules/dev-governance/.agents/global/` — **lido, nunca copiado**. Atualiza com `pnpm update dev-governance` |
+| `utils/.agents/project/` | **Modelo** da pasta de trabalho de um projeto: PROJECT_MAP, PROJECT_RULES, tasks e docs | **Copiado** para `.agents/project/` e preenchido pelo time. A partir daí pertence ao projeto |
+| `.agents/project/` | A instância usada pelo próprio dev-governance (com exemplos) | Não vai para o projeto |
+
+> **Regra de manutenção:** toda mudança de estrutura em `.agents/project/` deve ser replicada em `utils/.agents/project/` (exceto tasks e logs de exemplo).
+
+## Estrutura de `.agents/project/` (no projeto consumidor)
+
+```
+.agents/project/
+  PROJECT_MAP.md                 → GPS do projeto (preencher a seção "Código-fonte")
+  PROJECT_RULES.md               → stack, comandos, restrições e RESPONSÁVEIS por área
+  tasks/                         → tasks NNN-slug.md (to-tickets)
+  docs/
+    README.md                    → porta de entrada + regras para IA
+    guia-fluxo-documentacao.md   → quando abrir RFC/design e quem aprova
+    convencoes-git.md            → branches, Conventional Commits, PRs
+    _templates/                  → rfc-completo, rfc-leve, design-api, design-ui
+    geral/rfcs/                  → RFCs transversais (GER-)
+    back/  README.md · rfcs/ (BE-) · designs/ (BE-D-)
+    front/ README.md · design-system.md · rfcs/ (FE-) · designs/ (FE-D-)
+    specs/                       → specs de feature (to-spec)
+    progress/                    → diário de bordo por task (update-progress)
+```
+
+Na **raiz** do projeto, além de `.agents/project/`, ficam `AGENTS.md` e `.github/pull_request_template.md`, porque a IA e o GitHub só os leem ali. Por isso `utils/` espelha a raiz do projeto:
+
+```
+utils/                           → copiado para a RAIZ do projeto consumidor
+  AGENTS.md                      → protocolo do agente
+  .github/pull_request_template.md
+  pnpm-workspace.yaml
+  .agents/project/               → estrutura acima
+```
+
+## Pipeline de Trabalho (Issue → PR)
+
+| # | Etapa | Skill | Artefato |
+|---|---|---|---|
+| 1 | Questionar a issue | `grill-plan` | conversa |
+| 2 | Registrar decisão de padrão/contrato (condicional) | `rfc-workflow` | `docs/<area>/rfcs/` e `docs/<area>/designs/` |
+| 3 | Aprovação do RFC (se a categoria exige) | — | RFC `Aceito` |
+| 4 | Especificar | `to-spec` | `docs/specs/<feature>-spec.md` |
+| 5 | Fatiar | `to-tickets` | `tasks/<NNN>-<slug>.md` |
+| 6 | Implementar com TDD | `execute-task` + `tdd-workflow` + skill do domínio | código + testes |
+| 7 | Registrar progresso | `update-progress` | `docs/progress/<NNN>-<slug>-log.md` |
+| 8 | Commit e PR | `smart-commit` / `create-pr` | commits + PR |
+| 9 | Fechar o ciclo | — | RFC `Implementado`, design `Pronto`, índices atualizados |
+
+Detalhes: [`.agents/global/GLOBAL_RULES.md`](.agents/global/GLOBAL_RULES.md) (seção 2.1) e [`utils/.agents/project/docs/README.md`](utils/.agents/project/docs/README.md).
+
+---
+
+## Instalação em um projeto
 
 
+### 1. Configure o pnpm (`pnpm-workspace.yaml` do projeto)
 
-## PARA RODAR O PROJETO:
-
-adicionar no projeto em que está trabalhando com os seguintes passos:
-
-## 1. Crie ou edite o arquivo: pnpm-workspace.yaml:
-
-`
+```yaml
 onlyBuiltDependencies:
   - "dev-governance"
-`
+```
 
-## 2. Crie ou edite o arquivo: package.json:
-adicionando a linha: `"dev-governance": "git+https://github.com/CharlieBellow/dev-governance.git"`, em devDependencies
-`
- "devDependencies": {
-    "dev-governance": "git+https://github.com/CharlieBellow/dev-governance.git"
-    }
-`
-## 3. Instale as dependências para que o dev dependence seja adicionado como dependência e não polua o projeto:
+### 2. Adicione a dependência (`package.json` do projeto)
 
-`bash
+```json
+"devDependencies": {
+  "dev-governance": "git+https://github.com/CharlieBellow/dev-governance.git"
+}
+```
+
+### 3. Instale
+
+```bash
 pnpm install
-`
+```
 
-## 4. Adicione no seu arquivo AGENTS.md a informação de que o projeto se utiliza desse repositório para usar as skills:
+As regras e skills globais ficam disponíveis em `node_modules/dev-governance/.agents/global/`, sem poluir o projeto.
 
-### Diretrizes do Projeto ###
-Este projeto utiliza o repositório Dev Governance para governança de código.
+### 4. Copie o conteúdo de `utils/` para a raiz do projeto
 
-Siga estritamente as regras de Clean Code, arquitetura limpa e testes em Vitest presentes no repositório.
-Consulte as skills globais disponíveis em ./node_modules/dev-governance/skills/.
+```bash
+cp -rn node_modules/dev-governance/utils/. ./
+```
 
-## 5. Copie a estrutura de .agents/project na raiz do seu projeto.
+O `-n` (*no-clobber*) **não sobrescreve** arquivos que já existem. Isso cria `.agents/project/`, `.github/pull_request_template.md` e `AGENTS.md`, mas preserva o que o projeto já tem.
 
-Crie um pasta .agents no seu projeto.
+### 5. Confira o AGENTS.md
 
-Depois de instalar as dependências, procure a pasta dev-governance em node_modules e copie a pasta project e salve na pasta .agents do seu projeto. Essa é uma estrutura de pastas necessária para as skills savarem os arquivos .md gerados.
+Se o projeto **já tinha** `AGENTS.md` (ou `CLAUDE.md`), o passo 4 não o substituiu: mescle manualmente o conteúdo de `node_modules/dev-governance/utils/AGENTS.md` nele.
+
+### 6. Preencha o modelo (uma vez, pelo time)
+
+1. `PROJECT_MAP.md` → seção "Código-fonte" com as pastas reais do projeto.
+2. `PROJECT_RULES.md` → stack, comandos e **Responsáveis** por área (usados nas notificações de RFC).
+3. `docs/back/README.md` e `docs/front/README.md` → "Padrões vigentes".
+4. `docs/front/design-system.md` → tokens e componentes base existentes. A partir daí, qualquer componente fora do catálogo exige RFC.
+5. Remova a área que o projeto não tem (ex.: `docs/front/` em uma API pura).
+6. Commit: `docs(geral): adota governança do dev-governance`.
+
+### Atualizações futuras
+
+- **Skills e regras globais:** `pnpm update dev-governance` — chegam automaticamente.
+- **Modelo de `.agents/project/`:** não é sobrescrito (o projeto já o preencheu). Ao atualizar o dev-governance, compare `node_modules/dev-governance/utils/.agents/project/` com o seu e traga manualmente o que for estrutural (ex.: um template novo em `_templates/`).

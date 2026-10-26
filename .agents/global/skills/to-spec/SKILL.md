@@ -11,6 +11,14 @@ Sintetizar o contexto atual da conversa, decisões arquiteturais (ADRs) e o voca
 ## Processo e Estrutura de Saída
 Gere um documento de especificação em Markdown seguindo exatamente este template e salve-o em **`.agents/project/docs/specs/<nome-da-feature>-spec.md`**:
 
+### 0. Documentos Relacionados
+- Issue: `#___`
+- RFC(s): caminho em `.agents/project/docs/*/rfcs/` e **status** (ex.: `BE-0004 — Aceito`).
+- Design(s): caminho em `.agents/project/docs/*/designs/`.
+- Se a spec depende de um RFC ainda `Proposto`, declare: **"Bloqueada até aprovação de <ID>"**.
+
+> A spec **não redecide** o que o RFC/design decidiu: contrato de API, convenção e componentes visuais vêm de lá, por referência. Se a conversa chegou a uma decisão de padrão que ainda não tem RFC, pare e indique a skill `rfc-workflow` antes de gerar a spec.
+
 ### 1. Declaração do Problema
 O problema enfrentado pelo usuário sob a perspectiva dele.
 
