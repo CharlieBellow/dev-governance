@@ -1,20 +1,20 @@
 ---
 name: create-pr
-description: "Gera o texto de Pull Request a partir da task em .agents/project/tasks/ e do log de progresso em .agents/project/docs/progress/. Use quando o usuário pedir o texto/descrição da PR de uma task específica."
+description: "Gera o texto de Pull Request de uma issue a partir de todas as suas tasks (.agents/project/tasks/*#<issue>.md) e logs (.agents/project/docs/progress/*#<issue>-log.md). Use quando o usuário pedir o texto/descrição da PR de uma issue ou task."
 ---
 
 # Skill: Gerar Texto de Pull Request (Smart PR)
 
 ## Descrição
-Lê a Task original (`.agents/project/tasks/`) e o Log de Progresso correspondente (`.agents/project/docs/progress/`) para gerar um texto de Pull Request rico, estruturado, profissional e pronto para ser copiado.
+Lê **todas as tasks de uma issue** (`.agents/project/tasks/*#<issue>.md`) e os Logs de Progresso correspondentes (`.agents/project/docs/progress/*#<issue>-log.md`) para gerar um texto de Pull Request rico, estruturado, profissional e pronto para ser copiado.
 
 ## Como Acionar / Executar
-Use o comando: `Gere o texto da PR para a task [numero]-[nome-da-task]`
+Use o comando: `Gere o texto da PR da issue #[issue]`
 
 ## Instruções para o Agente
 Quando acionado, o agente DEVE:
-1. Ler o arquivo da Task em `.agents/project/tasks/[numero]-[nome-da-task].md`.
-2. Ler o arquivo de Log em `.agents/project/docs/progress/[numero]-[nome-da-task]-log.md`.
+1. Listar as tasks da issue pelo sufixo do nome: `.agents/project/tasks/*#[issue].md`. Se alguma **não** estiver com status `concluído`, **pare** e liste o que falta — o PR só é gerado com todas as tasks da issue concluídas.
+2. Ler os logs correspondentes em `.agents/project/docs/progress/*#[issue]-log.md`.
 3. Sintetizar as informações combinando o problema inicial com a solução implementada, gerando o markdown abaixo.
 4. Se o projeto tiver `.github/pull_request_template.md`, usar **esse** template (prevalece sobre o abaixo) e seguir `.agents/project/docs/convencoes-git.md` para o título.
 5. Referenciar o RFC/design relacionado em `.agents/project/docs/` (back, front ou geral), quando houver.
@@ -24,7 +24,7 @@ Quando acionado, o agente DEVE:
 ## Template de Saída da PR (Obrigatório)
 
 📝 **Resumo das Alterações**
-Este Pull Request consolida as alterações referentes à task `[NUMERO] - [NOME_DA_TASK]`, implementando os requisitos arquiteturais definidos em spec com foco em Clean Code, DDD e segurança.
+Closes #[ISSUE]. Este Pull Request consolida as tasks `[NNN]`, `[NNN]`... da issue #[ISSUE], implementando os requisitos arquiteturais definidos em spec com foco em Clean Code, DDD e segurança.
 
 🎯 **O que foi feito?**
 - [Resumo técnico item 1 do que foi implementado]

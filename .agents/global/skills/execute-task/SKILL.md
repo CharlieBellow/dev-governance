@@ -9,13 +9,13 @@ description: "Executa uma task de .agents/project/tasks/ de forma isolada, lendo
 Instrui o agente Sênior a executar uma Task/Spec específica de forma isolada, garantindo o uso de Clean Architecture, Domain-Driven Design, validações com Zod e cobertura obrigatória de testes com Vitest.
 
 ## Como Acionar
-Use o comando: `Execute a task [NNN]-[nome-da-task].md`
+Use o comando: `Execute a task [NNN]-[nome-da-task]#[issue].md` (ou só pelo número: `Execute a task 001`)
 
 ## ⚙️ Diretrizes Obrigatórias de Execução para o Agente
 Quando esta skill for acionada, você (agente) DEVE seguir estritamente o protocolo abaixo:
 
 1. **Leitura Cirúrgica (Economia de Tokens):** 
-   - Leia APENAS o arquivo `.agents/project/PROJECT_MAP.md`, o arquivo da Task em `.agents/project/tasks/[NNN]-[nome-da-task].md` e **somente** os RFC/design/spec que a task referencia.
+   - Leia APENAS o arquivo `.agents/project/PROJECT_MAP.md`, o arquivo da Task em `.agents/project/tasks/[NNN]-[nome-da-task]#[issue].md` e **somente** os RFC/design/spec que a task referencia.
    - NUNCA varra o repositório inteiro.
 1.1. **Portão de Governança:**
    - Se `Bloqueado por` cita uma task não concluída ou um RFC que não está `Aceito`, **pare** e informe o bloqueio — não implemente.

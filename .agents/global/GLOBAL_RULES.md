@@ -42,10 +42,10 @@ Toda issue percorre as etapas abaixo, nesta ordem. Etapas marcadas como condicio
 | 2 | **Condicional:** registrar decisão de padrão/contrato | `rfc-workflow` | RFC e/ou design em `.agents/project/docs/<area>/` |
 | 3 | Aguardar aprovação do RFC (se a categoria exige confirmação ativa) | — | Status `Aceito` no RFC |
 | 4 | Especificar a feature | `to-spec` | `.agents/project/docs/specs/<feature>-spec.md` |
-| 5 | Fatiar em tasks verticais | `to-tickets` | `.agents/project/tasks/<NNN>-<slug>.md` |
+| 5 | Fatiar em tasks verticais | `to-tickets` | `.agents/project/tasks/<NNN>-<slug>#<issue>.md` (ex.: `001-rota-delete-users#42.md`) |
 | 6 | Implementar cada task com TDD | `execute-task` + `tdd-workflow` (+ skill do domínio da matriz) | Código + testes |
-| 7 | Registrar o progresso | `update-progress` | `.agents/project/docs/progress/<NNN>-<slug>-log.md` |
-| 8 | Commit e PR | `smart-commit` / `create-pr` | Commits + texto de PR |
+| 7 | Registrar o progresso | `update-progress` | `.agents/project/docs/progress/<NNN>-<slug>#<issue>-log.md` |
+| 8 | Commit e PR (PR quando **todas** as tasks `#<issue>` estiverem concluídas) | `smart-commit` / `create-pr` | Commits + texto de PR da issue |
 | 9 | Fechar o ciclo | — | Status do RFC → `Implementado`, design → `Pronto`, índices atualizados |
 
 ## 2.2 Documentação Antes do Código (Governança de Decisões)

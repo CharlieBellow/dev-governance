@@ -13,7 +13,7 @@
 - `.agents/project/`
   - `PROJECT_MAP.md`             # Este mapa
   - `PROJECT_RULES.md`           # Stack e regras específicas deste projeto
-  - `tasks/`                     # Tasks de fatia vertical (NNN-slug.md)
+  - `tasks/`                     # Tasks de fatia vertical (NNN-slug#<issue>.md — ex.: 001-rota-delete-users#42.md)
   - `docs/`
     - `README.md`                # Porta de entrada da documentação + regras para IA
     - `guia-fluxo-documentacao.md` # Quando abrir RFC/design, janelas de aviso
@@ -23,7 +23,7 @@
     - `back/`                    # README (padrões vigentes), rfcs/ (BE-), designs/ (BE-D-)
     - `front/`                   # README, design-system.md, rfcs/ (FE-), designs/ (FE-D-)
     - `specs/`                   # Specs de feature (<feature>-spec.md)
-    - `progress/`                # Diário de bordo por task (<NNN>-<slug>-log.md)
+    - `progress/`                # Diário de bordo por task (<NNN>-<slug>#<issue>-log.md)
 
 ## 📁 Código-fonte (preencher)
 

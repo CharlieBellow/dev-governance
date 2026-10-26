@@ -30,7 +30,7 @@
   - `project/`                   # Instância de .agents/project usada POR ESTE repositório
     - `PROJECT_MAP.md`           # Este mapa
     - `PROJECT_RULES.md`         # Regras do projeto de exemplo (To-Do API)
-    - `tasks/`                   # Tasks deste repositório (NNN-slug.md)
+    - `tasks/`                   # Tasks deste repositório (NNN-slug#<issue>.md)
     - `docs/`                    # Mesma estrutura de utils/.agents/project/docs (ver abaixo)
 - `utils/`                       # ⬅ Espelho da RAIZ do projeto consumidor: tudo aqui é copiado para lá
   - `AGENTS.md`                  # → AGENTS.md na raiz do projeto (protocolo do agente)

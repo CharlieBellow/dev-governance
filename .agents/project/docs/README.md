@@ -10,7 +10,7 @@
 .agents/project/
   PROJECT_MAP.md                → GPS do projeto (estrutura de pastas)
   PROJECT_RULES.md              → stack e regras específicas do projeto
-  tasks/                        → tasks de fatia vertical (NNN-slug.md), geradas a partir das specs
+  tasks/                        → tasks de fatia vertical (NNN-slug#<issue>.md), geradas a partir das specs
   docs/
     README.md                     → você está aqui (porta de entrada + regras para IA)
     guia-fluxo-documentacao.md    → processo passo a passo: quando abrir RFC/design, janelas de aviso

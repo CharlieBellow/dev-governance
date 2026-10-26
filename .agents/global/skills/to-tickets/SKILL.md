@@ -1,6 +1,6 @@
 ---
 name: to-tickets
-description: "Quebra uma spec, plano ou conversa em tasks de fatia vertical (tracer-bullets) com dependências, salvas em .agents/project/tasks/<NNN>-<slug>.md seguindo .agents/global/task/template-task.md. Use quando o usuário pedir para fatiar uma spec em tasks/tickets."
+description: "Quebra uma spec, plano ou conversa em tasks de fatia vertical (tracer-bullets) com dependências, salvas em .agents/project/tasks/<NNN>-<slug>#<issue>.md seguindo .agents/global/task/template-task.md. Use quando o usuário pedir para fatiar uma spec em tasks/tickets."
 ---
 
 # Skill: To Tickets (Fatiamento Vertical e Quebra de Tarefas)
@@ -18,5 +18,5 @@ Quebrar uma especificação, plano ou conversa atual em um conjunto de **tarefas
 
 ## Formato de Saída (Arquivos Locais em `.agents/project/tasks/`)
 1. Descubra o **maior número já usado** em `.agents/project/tasks/` e continue a partir dele (numeração global de 3 dígitos — nunca reinicie em `001` para uma nova spec, para não colidir com tasks anteriores).
-2. Escreva um arquivo por tarefa em **`.agents/project/tasks/<NNN>-<slug>.md`**, em ordem de dependência, seguindo **`.agents/global/task/template-task.md`**.
-3. Ao final, liste as tasks criadas com suas dependências em formato de árvore.
+2. Escreva um arquivo por tarefa em **`.agents/project/tasks/<NNN>-<slug>#<issue>.md`**, em ordem de dependência, seguindo **`.agents/global/task/template-task.md`**. O sufixo `#<issue>` é o número da issue que gerou a task (ex.: `001-rota-delete-users#42.md`). Se o número da issue não estiver na conversa ou na spec, **pergunte antes de criar os arquivos**.
+3. Ao final, liste as tasks criadas com suas dependências em formato de árvore, agrupadas por issue.
