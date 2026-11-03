@@ -10,7 +10,7 @@
 3. **Roteamento Dinâmico de Skills:** Antes de implementar uma funcionalidade, identifique o domínio da tarefa (Back-end, Front-end, Testes, Infra, Governança) e consulte obrigatoriamente a **Skill especializada** correspondente mapeada em `.agents/global/GLOBAL_RULES.md`.
 4. **Conformidade de Engenharia:** Todo código gerado DEVE seguir rigorosamente as regras técnicas descritas em `.agents/global/GLOBAL_RULES.md`.
 5. **Definition of Done:** Uma tarefa só é considerada concluída após a criação e validação dos testes automatizados correspondentes (Vitest / Testing Library).
-6. **Sincronia com o Modelo:** Toda mudança de estrutura em `.agents/project/` (pastas, templates de docs, PROJECT_MAP/RULES genéricos) DEVE ser replicada em `utils/.agents/project/`, que é o modelo copiado para os projetos consumidores. Exemplos específicos deste repositório (tasks e logs de exemplo) e o `.agents/project/README.md` (guia de instalação, só para o dev-governance) não são copiados.
+6. **Sincronia com o Modelo:** Toda mudança de estrutura em `.agents/project/` (pastas, templates de docs, PROJECT_MAP/RULES genéricos) DEVE ser replicada em `utils/.agents/project/`, que é o modelo copiado para os projetos consumidores. Exemplos específicos deste repositório (tasks e logs de exemplo) não são copiados.
 7. Todos os commits devem ser de autoria do autor, nunca da IA.
 
 ## 🗺️ Mapeamento de Leitura Inicial
