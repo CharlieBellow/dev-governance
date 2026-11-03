@@ -11,7 +11,7 @@
 3. **Roteamento Dinâmico de Skills:** Antes de implementar, identifique o domínio da tarefa (Back-end, Front-end, Testes, Infra, Governança) e consulte a **Skill** correspondente na matriz de `node_modules/dev-governance/.agents/global/GLOBAL_RULES.md`.
 4. **Conformidade de Engenharia:** Todo código gerado DEVE seguir `GLOBAL_RULES.md` (global) e `.agents/project/PROJECT_RULES.md` (projeto). Em conflito, o projeto prevalece.
 5. **Definition of Done:** Uma tarefa só é concluída após a criação e validação dos testes automatizados correspondentes (Vitest / Testing Library).
-
+6. Todos os commits devem ser de autoria do autor, nunca da IA.
 ## 📚 Documentação Técnica e Governança de Decisões
 
 As decisões técnicas do projeto ficam em `.agents/project/docs/`.
